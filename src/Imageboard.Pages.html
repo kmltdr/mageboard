@@ -21,10 +21,10 @@
 </span><span id="line-21"></span><span class="hs-comment">-- | Create error page with given text as error text.</span><span>
 </span><span id="line-22"></span><span class="annot"><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-type">errorView</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
 </span><span id="line-23"></span><span id="errorView"><span class="annot"><span class="annottext">errorView :: Text -&gt; Html
-</span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var hs-var">errorView</span></a></span></span><span> </span><span id="local-6989586621679160272"><span class="annot"><span class="annottext">msg :: Text
-</span><a href="#local-6989586621679160272"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; [Text] -&gt; Html -&gt; Html
+</span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var hs-var">errorView</span></a></span></span><span> </span><span id="local-6989586621679160266"><span class="annot"><span class="annottext">msg :: Text
+</span><a href="#local-6989586621679160266"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; [Text] -&gt; Html -&gt; Html
 </span><a href="Imageboard.Pages.Common.html#commonHtml"><span class="hs-identifier hs-var">commonHtml</span></a></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160272"><span class="hs-identifier hs-var">msg</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+</span><a href="#local-6989586621679160266"><span class="hs-identifier hs-var">msg</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-24"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
@@ -42,18 +42,18 @@ forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Html
 </span><span class="hs-identifier hs-var">H.text</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160272"><span class="hs-identifier hs-var">msg</span></a></span><span>
+</span><a href="#local-6989586621679160266"><span class="hs-identifier hs-var">msg</span></a></span><span>
 </span><span id="line-26"></span><span>
 </span><span id="line-27"></span><span class="hs-comment">-- | Render list of boards and some welcome text.</span><span>
 </span><span id="line-28"></span><span class="annot"><a href="Imageboard.Pages.html#homePage"><span class="hs-identifier hs-type">homePage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-type">BoardInfo</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
 </span><span id="line-29"></span><span id="homePage"><span class="annot"><span class="annottext">homePage :: [BoardInfo] -&gt; Html
-</span><a href="Imageboard.Pages.html#homePage"><span class="hs-identifier hs-var hs-var">homePage</span></a></span></span><span> </span><span id="local-6989586621679160267"><span class="annot"><span class="annottext">bs :: [BoardInfo]
-</span><a href="#local-6989586621679160267"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; [Text] -&gt; Html -&gt; Html
+</span><a href="Imageboard.Pages.html#homePage"><span class="hs-identifier hs-var hs-var">homePage</span></a></span></span><span> </span><span id="local-6989586621679160261"><span class="annot"><span class="annottext">bs :: [BoardInfo]
+</span><a href="#local-6989586621679160261"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; [Text] -&gt; Html -&gt; Html
 </span><a href="Imageboard.Pages.Common.html#commonHtml"><span class="hs-identifier hs-var">commonHtml</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Home page&quot;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(BoardInfo -&gt; Text) -&gt; [BoardInfo] -&gt; [Text]
 forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
 </span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">BoardInfo -&gt; Text
 </span><a href="Imageboard.Types.html#name"><span class="hs-identifier hs-var hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">[BoardInfo]
-</span><a href="#local-6989586621679160267"><span class="hs-identifier hs-var">bs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+</span><a href="#local-6989586621679160261"><span class="hs-identifier hs-var">bs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-30"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
@@ -79,9 +79,9 @@ forall (t :: * -&gt; *) m a.
 (Foldable t, Monoid m) =&gt;
 (a -&gt; m) -&gt; t a -&gt; m
 </span><span class="hs-identifier hs-var">foldMap</span></span><span> </span><span class="annot"><span class="annottext">[BoardInfo]
-</span><a href="#local-6989586621679160267"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">((BoardInfo -&gt; Html) -&gt; Html) -&gt; (BoardInfo -&gt; Html) -&gt; Html
+</span><a href="#local-6989586621679160261"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">((BoardInfo -&gt; Html) -&gt; Html) -&gt; (BoardInfo -&gt; Html) -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679160258"><span id="local-6989586621679160259"><span id="local-6989586621679160260"><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-type">BoardInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679160252"><span id="local-6989586621679160253"><span id="local-6989586621679160254"><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-type">BoardInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><span id="line-35"></span><span>                </span><span class="annot"><span class="annottext">Html -&gt; Html
 </span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -95,23 +95,23 @@ forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; AttributeValue
 forall a. ToValue a =&gt; a -&gt; AttributeValue
 </span><span class="hs-identifier hs-var">H.toValue</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160260"><span class="hs-identifier hs-var">name</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+</span><a href="#local-6989586621679160254"><span class="hs-identifier hs-var">name</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
 forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
 </span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
 </span><span class="hs-identifier hs-var">A.title</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Text -&gt; AttributeValue
 forall a. ToValue a =&gt; a -&gt; AttributeValue
 </span><span class="hs-identifier hs-var">H.toValue</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160258"><span class="hs-identifier hs-var">subtitle</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+</span><a href="#local-6989586621679160252"><span class="hs-identifier hs-var">subtitle</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span>
 </span><span id="line-37"></span><span>                        </span><span class="annot"><span class="annottext">Text -&gt; Html
 </span><span class="hs-identifier hs-var">H.text</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; Html) -&gt; Text -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160260"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><a href="#local-6989586621679160254"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="hs-string">&quot; - &quot;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160259"><span class="hs-identifier hs-var">title</span></a></span><span>
+</span><a href="#local-6989586621679160253"><span class="hs-identifier hs-var">title</span></a></span><span>
 </span><span id="line-38"></span></pre></body></html>

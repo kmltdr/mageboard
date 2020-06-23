@@ -14,32 +14,32 @@
 </span><a href="Imageboard.Markup.html#escapeHTML"><span class="hs-identifier hs-var hs-var">escapeHTML</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Text -&gt; Text) -&gt; Text -&gt; Text -&gt; Text
 forall a. (Char -&gt; a -&gt; a) -&gt; a -&gt; Text -&gt; a
 </span><span class="hs-identifier hs-var">T.foldr</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Text -&gt; Text
-</span><a href="#local-6989586621679159818"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679159812"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span class="annot"><span class="annottext">Text
 forall a. Monoid a =&gt; a
 </span><span class="hs-identifier hs-var">mempty</span></span><span>
 </span><span id="line-14"></span><span>  </span><span class="hs-keyword">where</span><span>
-</span><span id="line-15"></span><span>    </span><span class="annot"><a href="#local-6989586621679159818"><span class="hs-identifier hs-type">escape</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
-</span><span id="line-16"></span><span>    </span><span id="local-6989586621679159818"><span class="annot"><span class="annottext">escape :: Char -&gt; Text -&gt; Text
-</span><a href="#local-6989586621679159818"><span class="hs-identifier hs-var hs-var">escape</span></a></span></span><span> </span><span class="hs-char">'&lt;'</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><span id="line-15"></span><span>    </span><span class="annot"><a href="#local-6989586621679159812"><span class="hs-identifier hs-type">escape</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-16"></span><span>    </span><span id="local-6989586621679159812"><span class="annot"><span class="annottext">escape :: Char -&gt; Text -&gt; Text
+</span><a href="#local-6989586621679159812"><span class="hs-identifier hs-var hs-var">escape</span></a></span></span><span> </span><span class="hs-char">'&lt;'</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">(&lt;&gt;)</span></span><span> </span><span class="annot"><span class="hs-string">&quot;&amp;lt;&quot;</span></span><span>
-</span><span id="line-17"></span><span>    </span><span class="annot"><a href="#local-6989586621679159818"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span class="hs-char">'&gt;'</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><span id="line-17"></span><span>    </span><span class="annot"><a href="#local-6989586621679159812"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span class="hs-char">'&gt;'</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">(&lt;&gt;)</span></span><span> </span><span class="annot"><span class="hs-string">&quot;&amp;gt;&quot;</span></span><span>
-</span><span id="line-18"></span><span>    </span><span class="annot"><a href="#local-6989586621679159818"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span class="hs-char">'&amp;'</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><span id="line-18"></span><span>    </span><span class="annot"><a href="#local-6989586621679159812"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span class="hs-char">'&amp;'</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">(&lt;&gt;)</span></span><span> </span><span class="annot"><span class="hs-string">&quot;&amp;amp;&quot;</span></span><span>
-</span><span id="line-19"></span><span>    </span><span class="annot"><a href="#local-6989586621679159818"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span class="hs-char">'&quot;'</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><span id="line-19"></span><span>    </span><span class="annot"><a href="#local-6989586621679159812"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span class="hs-char">'&quot;'</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">(&lt;&gt;)</span></span><span> </span><span class="annot"><span class="hs-string">&quot;&amp;quot;&quot;</span></span><span>
-</span><span id="line-20"></span><span>    </span><span class="annot"><a href="#local-6989586621679159818"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span id="local-6989586621679159817"><span class="annot"><span class="annottext">x :: Char
-</span><a href="#local-6989586621679159817"><span class="hs-identifier hs-var">x</span></a></span></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><span id="line-20"></span><span>    </span><span class="annot"><a href="#local-6989586621679159812"><span class="hs-identifier hs-var">escape</span></a></span><span> </span><span id="local-6989586621679159811"><span class="annot"><span class="annottext">x :: Char
+</span><a href="#local-6989586621679159811"><span class="hs-identifier hs-var">x</span></a></span></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">(&lt;&gt;)</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; Text -&gt; Text) -&gt; Text -&gt; Text -&gt; Text
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Text
 </span><span class="hs-identifier hs-var">T.singleton</span></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679159817"><span class="hs-identifier hs-var">x</span></a></span><span>
+</span><a href="#local-6989586621679159811"><span class="hs-identifier hs-var">x</span></a></span><span>
 </span><span id="line-21"></span><span>
 </span><span id="line-22"></span><span class="hs-comment">-- | Escape HTML and apply formatting to given text.</span><span>
 </span><span id="line-23"></span><span class="annot"><a href="Imageboard.Markup.html#formatPost"><span class="hs-identifier hs-type">formatPost</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>

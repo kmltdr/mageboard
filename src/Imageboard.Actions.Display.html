@@ -12,42 +12,42 @@
 </span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Web.Scotty</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">S</span></span><span>
 </span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Network.HTTP.Types.Status</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">notFound404</span></span><span class="hs-special">)</span><span>
 </span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Pages.html"><span class="hs-identifier">Imageboard.Pages</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier">errorView</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Pages.Catalog.html#catalogView"><span class="hs-identifier">catalogView</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Pages.Thread.html#threadView"><span class="hs-identifier">threadView</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Pages.html#homePage"><span class="hs-identifier">homePage</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Pages.Recent.html#recentView"><span class="hs-identifier">recentView</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Utils.html"><span class="hs-identifier">Imageboard.Utils</span></a></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html"><span class="hs-identifier">Imageboard.Actions.Common</span></a></span><span>
 </span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Database.html"><span class="hs-identifier">Imageboard.Database</span></a></span><span>
 </span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Types.html"><span class="hs-identifier">Imageboard.Types</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier">Board</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-18"></span><span>
 </span><span id="line-19"></span><span class="hs-comment">-- | Create new captcha.</span><span>
-</span><span id="line-20"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayCaptcha"><span class="hs-identifier hs-type">displayCaptcha</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-21"></span><span id="displayCaptcha"><span class="annot"><span class="annottext">displayCaptcha :: ActionM ()
+</span><span id="line-20"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayCaptcha"><span class="hs-identifier hs-type">displayCaptcha</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-21"></span><span id="displayCaptcha"><span class="annot"><span class="annottext">displayCaptcha :: Action
 </span><a href="Imageboard.Actions.Display.html#displayCaptcha"><span class="hs-identifier hs-var hs-var">displayCaptcha</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-22"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679160603"><span class="annot"><span class="annottext">sol :: String
-</span><a href="#local-6989586621679160603"><span class="hs-identifier hs-var">sol</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679160602"><span class="annot"><span class="annottext">cap :: ByteString
-</span><a href="#local-6989586621679160602"><span class="hs-identifier hs-var">cap</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO (String, ByteString) -&gt; ActionT Text IO (String, ByteString)
+</span><span id="line-22"></span><span>    </span><span class="hs-special">(</span><span id="local-6989586621679160599"><span class="annot"><span class="annottext">sol :: String
+</span><a href="#local-6989586621679160599"><span class="hs-identifier hs-var">sol</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679160598"><span class="annot"><span class="annottext">cap :: ByteString
+</span><a href="#local-6989586621679160598"><span class="hs-identifier hs-var">cap</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO (String, ByteString) -&gt; ActionT Text IO (String, ByteString)
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 </span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO (String, ByteString) -&gt; ActionT Text IO (String, ByteString))
 -&gt; IO (String, ByteString) -&gt; ActionT Text IO (String, ByteString)
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">IO (String, ByteString)
 </span><span class="hs-identifier hs-var">makeCaptcha</span></span><span>
-</span><span id="line-23"></span><span>    </span><span class="annot"><span class="annottext">IO () -&gt; ActionM ()
+</span><span id="line-23"></span><span>    </span><span class="annot"><span class="annottext">IO () -&gt; Action
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
-</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO () -&gt; ActionM ()) -&gt; IO () -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO () -&gt; Action) -&gt; IO () -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; IO ()
 </span><a href="Imageboard.Database.html#insertCaptcha"><span class="hs-identifier hs-var">insertCaptcha</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679160603"><span class="hs-identifier hs-var">sol</span></a></span><span>
-</span><span id="line-24"></span><span>    </span><span class="annot"><span class="annottext">ByteString -&gt; ActionM ()
-</span><span class="hs-identifier hs-var">S.raw</span></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; ActionM ()) -&gt; ByteString -&gt; ActionM ()
+</span><a href="#local-6989586621679160599"><span class="hs-identifier hs-var">sol</span></a></span><span>
+</span><span id="line-24"></span><span>    </span><span class="annot"><span class="annottext">ByteString -&gt; Action
+</span><span class="hs-identifier hs-var">S.raw</span></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Action) -&gt; ByteString -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; ByteString
 </span><span class="hs-identifier hs-var">BS.fromStrict</span></span><span> </span><span class="annot"><span class="annottext">ByteString
-</span><a href="#local-6989586621679160602"><span class="hs-identifier hs-var">cap</span></a></span><span>
+</span><a href="#local-6989586621679160598"><span class="hs-identifier hs-var">cap</span></a></span><span>
 </span><span id="line-25"></span><span>
 </span><span id="line-26"></span><span class="hs-comment">-- | Display all threads on board in catalog style.</span><span>
-</span><span id="line-27"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayCatalog"><span class="hs-identifier hs-type">displayCatalog</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-28"></span><span id="displayCatalog"><span class="annot"><span class="annottext">displayCatalog :: Board -&gt; ActionM ()
-</span><a href="Imageboard.Actions.Display.html#displayCatalog"><span class="hs-identifier hs-var hs-var">displayCatalog</span></a></span></span><span> </span><span id="local-6989586621679160597"><span class="annot"><span class="annottext">b :: Board
-</span><a href="#local-6989586621679160597"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-27"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayCatalog"><span class="hs-identifier hs-type">displayCatalog</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-28"></span><span id="displayCatalog"><span class="annot"><span class="annottext">displayCatalog :: Board -&gt; Action
+</span><a href="Imageboard.Actions.Display.html#displayCatalog"><span class="hs-identifier hs-var hs-var">displayCatalog</span></a></span></span><span> </span><span id="local-6989586621679160593"><span class="annot"><span class="annottext">b :: Board
+</span><a href="#local-6989586621679160593"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-29"></span><span>    </span><span class="annot"><span class="annottext">IO (Maybe (BoardInfo, BoardConstraints))
 -&gt; ActionT Text IO (Maybe (BoardInfo, BoardConstraints))
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
@@ -71,68 +71,67 @@ Monad m =&gt;
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; IO (Maybe BoardInfo)
 </span><a href="Imageboard.Database.html#getBoardInfo"><span class="hs-identifier hs-var">getBoardInfo</span></a></span><span> </span><span class="annot"><span class="annottext">Board
-</span><a href="#local-6989586621679160597"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">IO (Maybe BoardConstraints -&gt; Maybe (BoardInfo, BoardConstraints))
+</span><a href="#local-6989586621679160593"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">IO (Maybe BoardConstraints -&gt; Maybe (BoardInfo, BoardConstraints))
 -&gt; IO (Maybe BoardConstraints)
 -&gt; IO (Maybe (BoardInfo, BoardConstraints))
 forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; IO (Maybe BoardConstraints)
 </span><a href="Imageboard.Database.html#getConstraints"><span class="hs-identifier hs-var">getConstraints</span></a></span><span> </span><span class="annot"><span class="annottext">Board
-</span><a href="#local-6989586621679160597"><span class="hs-identifier hs-var">b</span></a></span><span>
+</span><a href="#local-6989586621679160593"><span class="hs-identifier hs-var">b</span></a></span><span>
 </span><span id="line-30"></span><span>    </span><span class="annot"><span class="annottext">ActionT Text IO (Maybe (BoardInfo, BoardConstraints))
--&gt; (Maybe (BoardInfo, BoardConstraints) -&gt; ActionM ())
--&gt; ActionM ()
+-&gt; (Maybe (BoardInfo, BoardConstraints) -&gt; Action) -&gt; Action
 forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
-</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">ActionM ()
--&gt; ((BoardInfo, BoardConstraints) -&gt; ActionM ())
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">Action
+-&gt; ((BoardInfo, BoardConstraints) -&gt; Action)
 -&gt; Maybe (BoardInfo, BoardConstraints)
--&gt; ActionM ()
+-&gt; Action
 forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
 </span><span class="hs-identifier hs-var">maybe</span></span><span>
 </span><span id="line-31"></span><span>        </span><span class="hs-keyword">do</span><span>
-</span><span id="line-32"></span><span>            </span><span class="annot"><span class="annottext">Status -&gt; ActionM ()
+</span><span id="line-32"></span><span>            </span><span class="annot"><span class="annottext">Status -&gt; Action
 </span><span class="hs-identifier hs-var">S.status</span></span><span> </span><span class="annot"><span class="annottext">Status
 </span><span class="hs-identifier hs-var">notFound404</span></span><span>
-</span><span id="line-33"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+</span><span id="line-33"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; Html -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Html
 </span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Board does not exist&quot;</span></span><span>
-</span><span id="line-34"></span><span>        </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679160589"><span class="annot"><span class="annottext">i :: BoardInfo
-</span><a href="#local-6989586621679160589"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679160588"><span class="annot"><span class="annottext">c :: BoardConstraints
-</span><a href="#local-6989586621679160588"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-35"></span><span>            </span><span id="local-6989586621679160587"><span class="annot"><span class="annottext">[Board]
-</span><a href="#local-6989586621679160587"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [Board] -&gt; ActionT Text IO [Board]
+</span><span id="line-34"></span><span>        </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679160585"><span class="annot"><span class="annottext">i :: BoardInfo
+</span><a href="#local-6989586621679160585"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679160584"><span class="annot"><span class="annottext">c :: BoardConstraints
+</span><a href="#local-6989586621679160584"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-35"></span><span>            </span><span id="local-6989586621679160583"><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679160583"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [Board] -&gt; ActionT Text IO [Board]
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 </span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO [Board] -&gt; ActionT Text IO [Board])
 -&gt; IO [Board] -&gt; ActionT Text IO [Board]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">IO [Board]
 </span><a href="Imageboard.Database.html#getBoardNames"><span class="hs-identifier hs-var">getBoardNames</span></a></span><span>
-</span><span id="line-36"></span><span>            </span><span id="local-6989586621679160585"><span class="annot"><span class="annottext">[ThreadHead]
-</span><a href="#local-6989586621679160585"><span class="hs-identifier hs-var">threads</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [ThreadHead] -&gt; ActionT Text IO [ThreadHead]
+</span><span id="line-36"></span><span>            </span><span id="local-6989586621679160581"><span class="annot"><span class="annottext">[ThreadHead]
+</span><a href="#local-6989586621679160581"><span class="hs-identifier hs-var">threads</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [ThreadHead] -&gt; ActionT Text IO [ThreadHead]
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 </span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO [ThreadHead] -&gt; ActionT Text IO [ThreadHead])
 -&gt; IO [ThreadHead] -&gt; ActionT Text IO [ThreadHead]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; IO [ThreadHead]
 </span><a href="Imageboard.Database.html#getThreads"><span class="hs-identifier hs-var">getThreads</span></a></span><span> </span><span class="annot"><span class="annottext">Board
-</span><a href="#local-6989586621679160597"><span class="hs-identifier hs-var">b</span></a></span><span>
-</span><span id="line-37"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+</span><a href="#local-6989586621679160593"><span class="hs-identifier hs-var">b</span></a></span><span>
+</span><span id="line-37"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; Html -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">BoardInfo -&gt; BoardConstraints -&gt; [Board] -&gt; [ThreadHead] -&gt; Html
 </span><a href="Imageboard.Pages.Catalog.html#catalogView"><span class="hs-identifier hs-var">catalogView</span></a></span><span> </span><span class="annot"><span class="annottext">BoardInfo
-</span><a href="#local-6989586621679160589"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">BoardConstraints
-</span><a href="#local-6989586621679160588"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">[Board]
-</span><a href="#local-6989586621679160587"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">[ThreadHead]
-</span><a href="#local-6989586621679160585"><span class="hs-identifier hs-var">threads</span></a></span><span>
+</span><a href="#local-6989586621679160585"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">BoardConstraints
+</span><a href="#local-6989586621679160584"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679160583"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">[ThreadHead]
+</span><a href="#local-6989586621679160581"><span class="hs-identifier hs-var">threads</span></a></span><span>
 </span><span id="line-38"></span><span>
 </span><span id="line-39"></span><span class="hs-comment">-- | Display single thread with replies.</span><span>
-</span><span id="line-40"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayThread"><span class="hs-identifier hs-type">displayThread</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-41"></span><span id="displayThread"><span class="annot"><span class="annottext">displayThread :: Board -&gt; Int -&gt; ActionM ()
-</span><a href="Imageboard.Actions.Display.html#displayThread"><span class="hs-identifier hs-var hs-var">displayThread</span></a></span></span><span> </span><span id="local-6989586621679160583"><span class="annot"><span class="annottext">b :: Board
-</span><a href="#local-6989586621679160583"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span id="local-6989586621679160582"><span class="annot"><span class="annottext">n :: Int
-</span><a href="#local-6989586621679160582"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-40"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayThread"><span class="hs-identifier hs-type">displayThread</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-41"></span><span id="displayThread"><span class="annot"><span class="annottext">displayThread :: Board -&gt; Int -&gt; Action
+</span><a href="Imageboard.Actions.Display.html#displayThread"><span class="hs-identifier hs-var hs-var">displayThread</span></a></span></span><span> </span><span id="local-6989586621679160579"><span class="annot"><span class="annottext">b :: Board
+</span><a href="#local-6989586621679160579"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span id="local-6989586621679160578"><span class="annot"><span class="annottext">n :: Int
+</span><a href="#local-6989586621679160578"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-42"></span><span>    </span><span class="annot"><span class="annottext">IO (Maybe (BoardInfo, BoardConstraints, Thread))
 -&gt; ActionT Text IO (Maybe (BoardInfo, BoardConstraints, Thread))
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
@@ -163,7 +162,7 @@ Monad m =&gt;
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; IO (Maybe BoardInfo)
 </span><a href="Imageboard.Database.html#getBoardInfo"><span class="hs-identifier hs-var">getBoardInfo</span></a></span><span> </span><span class="annot"><span class="annottext">Board
-</span><a href="#local-6989586621679160583"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">IO
+</span><a href="#local-6989586621679160579"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">IO
   (Maybe BoardConstraints
    -&gt; Maybe Thread -&gt; Maybe (BoardInfo, BoardConstraints, Thread))
 -&gt; IO (Maybe BoardConstraints)
@@ -171,60 +170,60 @@ forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; IO (Maybe BoardConstraints)
 </span><a href="Imageboard.Database.html#getConstraints"><span class="hs-identifier hs-var">getConstraints</span></a></span><span> </span><span class="annot"><span class="annottext">Board
-</span><a href="#local-6989586621679160583"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">IO (Maybe Thread -&gt; Maybe (BoardInfo, BoardConstraints, Thread))
+</span><a href="#local-6989586621679160579"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">IO (Maybe Thread -&gt; Maybe (BoardInfo, BoardConstraints, Thread))
 -&gt; IO (Maybe Thread)
 -&gt; IO (Maybe (BoardInfo, BoardConstraints, Thread))
 forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Int -&gt; IO (Maybe Thread)
 </span><a href="Imageboard.Database.html#getThread"><span class="hs-identifier hs-var">getThread</span></a></span><span> </span><span class="annot"><span class="annottext">Board
-</span><a href="#local-6989586621679160583"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">Int
-</span><a href="#local-6989586621679160582"><span class="hs-identifier hs-var">n</span></a></span><span>
+</span><a href="#local-6989586621679160579"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679160578"><span class="hs-identifier hs-var">n</span></a></span><span>
 </span><span id="line-43"></span><span>    </span><span class="annot"><span class="annottext">ActionT Text IO (Maybe (BoardInfo, BoardConstraints, Thread))
--&gt; (Maybe (BoardInfo, BoardConstraints, Thread) -&gt; ActionM ())
--&gt; ActionM ()
+-&gt; (Maybe (BoardInfo, BoardConstraints, Thread) -&gt; Action)
+-&gt; Action
 forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
-</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">ActionM ()
--&gt; ((BoardInfo, BoardConstraints, Thread) -&gt; ActionM ())
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">Action
+-&gt; ((BoardInfo, BoardConstraints, Thread) -&gt; Action)
 -&gt; Maybe (BoardInfo, BoardConstraints, Thread)
--&gt; ActionM ()
+-&gt; Action
 forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
 </span><span class="hs-identifier hs-var">maybe</span></span><span>
 </span><span id="line-44"></span><span>        </span><span class="hs-keyword">do</span><span>
-</span><span id="line-45"></span><span>            </span><span class="annot"><span class="annottext">Status -&gt; ActionM ()
+</span><span id="line-45"></span><span>            </span><span class="annot"><span class="annottext">Status -&gt; Action
 </span><span class="hs-identifier hs-var">S.status</span></span><span> </span><span class="annot"><span class="annottext">Status
 </span><span class="hs-identifier hs-var">notFound404</span></span><span>
-</span><span id="line-46"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+</span><span id="line-46"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; Html -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Html
 </span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Thread does not exist&quot;</span></span><span>
-</span><span id="line-47"></span><span>        </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679160579"><span class="annot"><span class="annottext">i :: BoardInfo
-</span><a href="#local-6989586621679160579"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679160578"><span class="annot"><span class="annottext">c :: BoardConstraints
-</span><a href="#local-6989586621679160578"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679160577"><span class="annot"><span class="annottext">t :: Thread
-</span><a href="#local-6989586621679160577"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-48"></span><span>            </span><span id="local-6989586621679160576"><span class="annot"><span class="annottext">[Board]
-</span><a href="#local-6989586621679160576"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [Board] -&gt; ActionT Text IO [Board]
+</span><span id="line-47"></span><span>        </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679160575"><span class="annot"><span class="annottext">i :: BoardInfo
+</span><a href="#local-6989586621679160575"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679160574"><span class="annot"><span class="annottext">c :: BoardConstraints
+</span><a href="#local-6989586621679160574"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679160573"><span class="annot"><span class="annottext">t :: Thread
+</span><a href="#local-6989586621679160573"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-48"></span><span>            </span><span id="local-6989586621679160572"><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679160572"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [Board] -&gt; ActionT Text IO [Board]
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 </span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO [Board] -&gt; ActionT Text IO [Board])
 -&gt; IO [Board] -&gt; ActionT Text IO [Board]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">IO [Board]
 </span><a href="Imageboard.Database.html#getBoardNames"><span class="hs-identifier hs-var">getBoardNames</span></a></span><span> </span><span>
-</span><span id="line-49"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+</span><span id="line-49"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; Html -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">BoardInfo -&gt; BoardConstraints -&gt; [Board] -&gt; Thread -&gt; Html
 </span><a href="Imageboard.Pages.Thread.html#threadView"><span class="hs-identifier hs-var">threadView</span></a></span><span> </span><span class="annot"><span class="annottext">BoardInfo
-</span><a href="#local-6989586621679160579"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">BoardConstraints
-</span><a href="#local-6989586621679160578"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">[Board]
-</span><a href="#local-6989586621679160576"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">Thread
-</span><a href="#local-6989586621679160577"><span class="hs-identifier hs-var">t</span></a></span><span>
+</span><a href="#local-6989586621679160575"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">BoardConstraints
+</span><a href="#local-6989586621679160574"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">[Board]
+</span><a href="#local-6989586621679160572"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">Thread
+</span><a href="#local-6989586621679160573"><span class="hs-identifier hs-var">t</span></a></span><span>
 </span><span id="line-50"></span><span>
 </span><span id="line-51"></span><span class="hs-comment">-- | Display 100 most recent posts.</span><span>
-</span><span id="line-52"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayRecent"><span class="hs-identifier hs-type">displayRecent</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-53"></span><span id="displayRecent"><span class="annot"><span class="annottext">displayRecent :: ActionM ()
-</span><a href="Imageboard.Actions.Display.html#displayRecent"><span class="hs-identifier hs-var hs-var">displayRecent</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; ActionT Text IO Html -&gt; ActionM ()
+</span><span id="line-52"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayRecent"><span class="hs-identifier hs-type">displayRecent</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-53"></span><span id="displayRecent"><span class="annot"><span class="annottext">displayRecent :: Action
+</span><a href="Imageboard.Actions.Display.html#displayRecent"><span class="hs-identifier hs-var hs-var">displayRecent</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; ActionT Text IO Html -&gt; Action
 forall (m :: * -&gt; *) a b. Monad m =&gt; (a -&gt; m b) -&gt; m a -&gt; m b
 </span><span class="hs-operator hs-var">=&lt;&lt;</span></span><span> </span><span class="annot"><span class="annottext">IO Html -&gt; ActionT Text IO Html
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
@@ -237,10 +236,10 @@ forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f
 </span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; IO [Post]
 </span><a href="Imageboard.Database.html#getPosts"><span class="hs-identifier hs-var">getPosts</span></a></span><span> </span><span class="annot"><span class="hs-number">100</span></span><span class="hs-special">)</span><span>
 </span><span id="line-54"></span><span>
-</span><span id="line-55"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayHomePage"><span class="hs-identifier hs-type">displayHomePage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-56"></span><span id="displayHomePage"><span class="annot"><span class="annottext">displayHomePage :: ActionM ()
-</span><a href="Imageboard.Actions.Display.html#displayHomePage"><span class="hs-identifier hs-var hs-var">displayHomePage</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; ActionT Text IO Html -&gt; ActionM ()
+</span><span id="line-55"></span><span class="annot"><a href="Imageboard.Actions.Display.html#displayHomePage"><span class="hs-identifier hs-type">displayHomePage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-56"></span><span id="displayHomePage"><span class="annot"><span class="annottext">displayHomePage :: Action
+</span><a href="Imageboard.Actions.Display.html#displayHomePage"><span class="hs-identifier hs-var hs-var">displayHomePage</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; ActionT Text IO Html -&gt; Action
 forall (m :: * -&gt; *) a b. Monad m =&gt; (a -&gt; m b) -&gt; m a -&gt; m b
 </span><span class="hs-operator hs-var">=&lt;&lt;</span></span><span> </span><span class="annot"><span class="annottext">IO Html -&gt; ActionT Text IO Html
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a

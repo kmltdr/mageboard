@@ -12,25 +12,25 @@
 </span><span id="line-12"></span><span>
 </span><span id="line-13"></span><span class="annot"><a href="Imageboard.Pages.Catalog.html#catalogThumbnail"><span class="hs-identifier hs-type">catalogThumbnail</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Imageboard.Types.html#File"><span class="hs-identifier hs-type">File</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
 </span><span id="line-14"></span><span id="catalogThumbnail"><span class="annot"><span class="annottext">catalogThumbnail :: Maybe File -&gt; Html
-</span><a href="Imageboard.Pages.Catalog.html#catalogThumbnail"><span class="hs-identifier hs-var hs-var">catalogThumbnail</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160202"><span class="annot"><span class="annottext">f :: File
-</span><a href="#local-6989586621679160202"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span>
-</span><span id="line-15"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679160201"><span class="annot"><span class="annottext">thumbLink :: AttributeValue
-</span><a href="#local-6989586621679160201"><span class="hs-identifier hs-var hs-var">thumbLink</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; AttributeValue
+</span><a href="Imageboard.Pages.Catalog.html#catalogThumbnail"><span class="hs-identifier hs-var hs-var">catalogThumbnail</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160196"><span class="annot"><span class="annottext">f :: File
+</span><a href="#local-6989586621679160196"><span class="hs-identifier hs-var">f</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679160195"><span class="annot"><span class="annottext">thumbLink :: AttributeValue
+</span><a href="#local-6989586621679160195"><span class="hs-identifier hs-var hs-var">thumbLink</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; AttributeValue
 forall a. ToValue a =&gt; a -&gt; AttributeValue
 </span><span class="hs-identifier hs-var">H.toValue</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; AttributeValue) -&gt; Text -&gt; AttributeValue
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">File -&gt; FileType
 </span><a href="Imageboard.Types.html#ext"><span class="hs-identifier hs-var hs-var">ext</span></a></span><span> </span><span class="annot"><span class="annottext">File
-</span><a href="#local-6989586621679160202"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-keyword">of</span><span>
-</span><span id="line-16"></span><span>            </span><span id="local-6989586621679160198"><span class="annot"><span class="annottext">e :: FileType
-</span><a href="#local-6989586621679160198"><span class="hs-identifier hs-var">e</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">FileType -&gt; Bool
+</span><a href="#local-6989586621679160196"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-16"></span><span>            </span><span id="local-6989586621679160192"><span class="annot"><span class="annottext">e :: FileType
+</span><a href="#local-6989586621679160192"><span class="hs-identifier hs-var">e</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">FileType -&gt; Bool
 </span><a href="Imageboard.Types.html#isAudio"><span class="hs-identifier hs-var">isAudio</span></a></span><span> </span><span class="annot"><span class="annottext">FileType
-</span><a href="#local-6989586621679160198"><span class="hs-identifier hs-var">e</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-string">&quot;audio.png&quot;</span></span><span>
+</span><a href="#local-6989586621679160192"><span class="hs-identifier hs-var">e</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-string">&quot;audio.png&quot;</span></span><span>
 </span><span id="line-17"></span><span>            </span><span class="annot"><a href="Imageboard.Types.html#EPUB"><span class="hs-identifier hs-type">EPUB</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-string">&quot;epub.png&quot;</span></span><span>
 </span><span id="line-18"></span><span>            </span><span class="annot"><a href="Imageboard.Types.html#SWF"><span class="hs-identifier hs-type">SWF</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-string">&quot;swf.png&quot;</span></span><span>
 </span><span id="line-19"></span><span>            </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">File -&gt; Text
 </span><a href="Imageboard.Pages.Common.html#fileThumbLink"><span class="hs-identifier hs-var">fileThumbLink</span></a></span><span> </span><span class="annot"><span class="annottext">File
-</span><a href="#local-6989586621679160202"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><a href="#local-6989586621679160196"><span class="hs-identifier hs-var">f</span></a></span><span>
 </span><span id="line-20"></span><span>    </span><span class="hs-keyword">in</span><span> </span><span class="annot"><span class="annottext">Html
 </span><span class="hs-identifier hs-var">H.img</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
 forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
@@ -39,12 +39,12 @@ forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
 forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
 </span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
 </span><span class="hs-identifier hs-var">A.src</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue
-</span><a href="#local-6989586621679160201"><span class="hs-identifier hs-var">thumbLink</span></a></span><span>
+</span><a href="#local-6989586621679160195"><span class="hs-identifier hs-var">thumbLink</span></a></span><span>
 </span><span id="line-21"></span><span class="annot"><a href="Imageboard.Pages.Catalog.html#catalogThumbnail"><span class="hs-identifier hs-var">catalogThumbnail</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Nothing</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;***&quot;</span></span><span>
 </span><span id="line-22"></span><span>
 </span><span id="line-23"></span><span class="annot"><a href="Imageboard.Pages.Catalog.html#catalogThread"><span class="hs-identifier hs-type">catalogThread</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#ThreadHead"><span class="hs-identifier hs-type">ThreadHead</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
 </span><span id="line-24"></span><span id="catalogThread"><span class="annot"><span class="annottext">catalogThread :: ThreadHead -&gt; Html
-</span><a href="Imageboard.Pages.Catalog.html#catalogThread"><span class="hs-identifier hs-var hs-var">catalogThread</span></a></span></span><span> </span><span id="local-6989586621679160188"><span id="local-6989586621679160189"><span class="annot"><a href="Imageboard.Types.html#ThreadHead"><span class="hs-identifier hs-type">ThreadHead</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><a href="Imageboard.Pages.Catalog.html#catalogThread"><span class="hs-identifier hs-var hs-var">catalogThread</span></a></span></span><span> </span><span id="local-6989586621679160182"><span id="local-6989586621679160183"><span class="annot"><a href="Imageboard.Types.html#ThreadHead"><span class="hs-identifier hs-type">ThreadHead</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
 </span><span class="hs-identifier hs-var">H.div</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
 forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
 </span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
@@ -62,7 +62,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
 </span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
 </span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue
-</span><a href="#local-6989586621679160181"><span class="hs-identifier hs-var">threadLink</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+</span><a href="#local-6989586621679160175"><span class="hs-identifier hs-var">threadLink</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
 </span><span id="line-26"></span><span>        </span><span class="annot"><span class="annottext">Maybe File -&gt; Html
@@ -70,7 +70,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Post -&gt; Maybe File
 </span><a href="Imageboard.Types.html#file"><span class="hs-identifier hs-var hs-var">file</span></a></span><span> </span><span class="annot"><span class="annottext">Post
-</span><a href="#local-6989586621679160189"><span class="hs-identifier hs-var">opPost</span></a></span><span>
+</span><a href="#local-6989586621679160183"><span class="hs-identifier hs-var">opPost</span></a></span><span>
 </span><span id="line-27"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
 </span><span class="hs-identifier hs-var">H.div</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -94,7 +94,7 @@ forall a. Show a =&gt; a -&gt; [Char]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ThreadInfo -&gt; Int
 </span><a href="Imageboard.Types.html#replyCount"><span class="hs-identifier hs-var hs-var">replyCount</span></a></span><span> </span><span class="annot"><span class="annottext">ThreadInfo
-</span><a href="#local-6989586621679160188"><span class="hs-identifier hs-var">opInfo</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679160182"><span class="hs-identifier hs-var">opInfo</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-30"></span><span>        </span><span class="annot"><span class="annottext">Html
 </span><a href="Imageboard.Pages.Common.html#space"><span class="hs-identifier hs-var">space</span></a></span><span>
 </span><span id="line-31"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
@@ -108,7 +108,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ThreadInfo -&gt; ThreadFlags
 </span><a href="Imageboard.Types.html#flags"><span class="hs-identifier hs-var hs-var">flags</span></a></span><span> </span><span class="annot"><span class="annottext">ThreadInfo
-</span><a href="#local-6989586621679160188"><span class="hs-identifier hs-var">opInfo</span></a></span><span>
+</span><a href="#local-6989586621679160182"><span class="hs-identifier hs-var">opInfo</span></a></span><span>
 </span><span id="line-32"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
 </span><span class="hs-identifier hs-var">H.div</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
 forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
@@ -124,12 +124,12 @@ forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
 </span><span class="hs-identifier hs-var">A.datetime</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Char] -&gt; AttributeValue
 forall a. ToValue a =&gt; a -&gt; AttributeValue
 </span><span class="hs-identifier hs-var">H.toValue</span></span><span> </span><span class="annot"><span class="annottext">[Char]
-</span><a href="#local-6989586621679160170"><span class="hs-identifier hs-var">threadDate</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+</span><a href="#local-6989586621679160164"><span class="hs-identifier hs-var">threadDate</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Char] -&gt; Html
 forall a. ToMarkup a =&gt; a -&gt; Html
 </span><span class="hs-identifier hs-var">H.toHtml</span></span><span> </span><span class="annot"><span class="annottext">[Char]
-</span><a href="#local-6989586621679160170"><span class="hs-identifier hs-var">threadDate</span></a></span><span>
+</span><a href="#local-6989586621679160164"><span class="hs-identifier hs-var">threadDate</span></a></span><span>
 </span><span id="line-35"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
 </span><span class="hs-identifier hs-var">H.div</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
 forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
@@ -139,7 +139,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Html
 forall a. ToMarkup a =&gt; a -&gt; Html
 </span><span class="hs-identifier hs-var">H.toHtml</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160169"><span class="hs-identifier hs-var">postSubject</span></a></span><span>
+</span><a href="#local-6989586621679160163"><span class="hs-identifier hs-var">postSubject</span></a></span><span>
 </span><span id="line-36"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
 </span><span class="hs-identifier hs-var">H.div</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
 forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
@@ -149,10 +149,10 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Html
 forall a. ToMarkup a =&gt; a -&gt; Html
 </span><span class="hs-identifier hs-var">H.preEscapedToHtml</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160167"><span class="hs-identifier hs-var">postText</span></a></span><span>
+</span><a href="#local-6989586621679160161"><span class="hs-identifier hs-var">postText</span></a></span><span>
 </span><span id="line-37"></span><span>    </span><span class="hs-keyword">where</span><span>
-</span><span id="line-38"></span><span>        </span><span id="local-6989586621679160181"><span class="annot"><span class="annottext">threadLink :: AttributeValue
-</span><a href="#local-6989586621679160181"><span class="hs-identifier hs-var hs-var">threadLink</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
+</span><span id="line-38"></span><span>        </span><span id="local-6989586621679160175"><span class="annot"><span class="annottext">threadLink :: AttributeValue
+</span><a href="#local-6989586621679160175"><span class="hs-identifier hs-var hs-var">threadLink</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Text -&gt; AttributeValue
 forall a. ToValue a =&gt; a -&gt; AttributeValue
@@ -163,7 +163,7 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Post -&gt; PostLocation
 </span><a href="Imageboard.Types.html#loc"><span class="hs-identifier hs-var hs-var">loc</span></a></span><span> </span><span class="annot"><span class="annottext">Post
-</span><a href="#local-6989586621679160189"><span class="hs-identifier hs-var">opPost</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
+</span><a href="#local-6989586621679160183"><span class="hs-identifier hs-var">opPost</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
@@ -176,31 +176,31 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Post -&gt; PostLocation
 </span><a href="Imageboard.Types.html#loc"><span class="hs-identifier hs-var hs-var">loc</span></a></span><span> </span><span class="annot"><span class="annottext">Post
-</span><a href="#local-6989586621679160189"><span class="hs-identifier hs-var">opPost</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-39"></span><span>        </span><span id="local-6989586621679160170"><span class="annot"><span class="annottext">threadDate :: [Char]
-</span><a href="#local-6989586621679160170"><span class="hs-identifier hs-var hs-var">threadDate</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">UTCTime -&gt; [Char]
+</span><a href="#local-6989586621679160183"><span class="hs-identifier hs-var">opPost</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-39"></span><span>        </span><span id="local-6989586621679160164"><span class="annot"><span class="annottext">threadDate :: [Char]
+</span><a href="#local-6989586621679160164"><span class="hs-identifier hs-var hs-var">threadDate</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">UTCTime -&gt; [Char]
 </span><a href="Imageboard.Pages.Common.html#formatDate"><span class="hs-identifier hs-var">formatDate</span></a></span><span> </span><span class="annot"><span class="annottext">(UTCTime -&gt; [Char]) -&gt; UTCTime -&gt; [Char]
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ThreadInfo -&gt; UTCTime
 </span><a href="Imageboard.Types.html#lastBump"><span class="hs-identifier hs-var hs-var">lastBump</span></a></span><span> </span><span class="annot"><span class="annottext">ThreadInfo
-</span><a href="#local-6989586621679160188"><span class="hs-identifier hs-var">opInfo</span></a></span><span>
-</span><span id="line-40"></span><span>        </span><span id="local-6989586621679160161"><span class="annot"><span class="annottext">postEmail :: Text
-</span><a href="#local-6989586621679160161"><span class="hs-identifier hs-var hs-var">postEmail</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">PostStub -&gt; Text
+</span><a href="#local-6989586621679160182"><span class="hs-identifier hs-var">opInfo</span></a></span><span>
+</span><span id="line-40"></span><span>        </span><span id="local-6989586621679160155"><span class="annot"><span class="annottext">postEmail :: Text
+</span><a href="#local-6989586621679160155"><span class="hs-identifier hs-var hs-var">postEmail</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">PostStub -&gt; Text
 </span><a href="Imageboard.Types.html#email"><span class="hs-identifier hs-var hs-var">email</span></a></span><span> </span><span class="annot"><span class="annottext">(PostStub -&gt; Text) -&gt; PostStub -&gt; Text
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Post -&gt; PostStub
 </span><a href="Imageboard.Types.html#content"><span class="hs-identifier hs-var hs-var">content</span></a></span><span> </span><span class="annot"><span class="annottext">Post
-</span><a href="#local-6989586621679160189"><span class="hs-identifier hs-var">opPost</span></a></span><span>
-</span><span id="line-41"></span><span>        </span><span id="local-6989586621679160169"><span class="annot"><span class="annottext">postSubject :: Text
-</span><a href="#local-6989586621679160169"><span class="hs-identifier hs-var hs-var">postSubject</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">PostStub -&gt; Text
+</span><a href="#local-6989586621679160183"><span class="hs-identifier hs-var">opPost</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span id="local-6989586621679160163"><span class="annot"><span class="annottext">postSubject :: Text
+</span><a href="#local-6989586621679160163"><span class="hs-identifier hs-var hs-var">postSubject</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">PostStub -&gt; Text
 </span><a href="Imageboard.Types.html#subject"><span class="hs-identifier hs-var hs-var">subject</span></a></span><span> </span><span class="annot"><span class="annottext">(PostStub -&gt; Text) -&gt; PostStub -&gt; Text
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Post -&gt; PostStub
 </span><a href="Imageboard.Types.html#content"><span class="hs-identifier hs-var hs-var">content</span></a></span><span> </span><span class="annot"><span class="annottext">Post
-</span><a href="#local-6989586621679160189"><span class="hs-identifier hs-var">opPost</span></a></span><span>
-</span><span id="line-42"></span><span>        </span><span id="local-6989586621679160167"><span class="annot"><span class="annottext">postText :: Text
-</span><a href="#local-6989586621679160167"><span class="hs-identifier hs-var hs-var">postText</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160161"><span class="hs-identifier hs-var">postEmail</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Bool
+</span><a href="#local-6989586621679160183"><span class="hs-identifier hs-var">opPost</span></a></span><span>
+</span><span id="line-42"></span><span>        </span><span id="local-6989586621679160161"><span class="annot"><span class="annottext">postText :: Text
+</span><a href="#local-6989586621679160161"><span class="hs-identifier hs-var hs-var">postText</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679160155"><span class="hs-identifier hs-var">postEmail</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="hs-string">&quot;nofo&quot;</span></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text
 </span><a href="Imageboard.Markup.html#escapeHTML"><span class="hs-identifier hs-var">escapeHTML</span></a></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text
@@ -211,30 +211,30 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Post -&gt; PostStub
 </span><a href="Imageboard.Types.html#content"><span class="hs-identifier hs-var hs-var">content</span></a></span><span> </span><span class="annot"><span class="annottext">Post
-</span><a href="#local-6989586621679160189"><span class="hs-identifier hs-var">opPost</span></a></span><span>
+</span><a href="#local-6989586621679160183"><span class="hs-identifier hs-var">opPost</span></a></span><span>
 </span><span id="line-43"></span><span>
 </span><span id="line-44"></span><span class="hs-comment">-- | Render list of all threads on a board.</span><span>
 </span><span id="line-45"></span><span class="annot"><a href="Imageboard.Pages.Catalog.html#catalogView"><span class="hs-identifier hs-type">catalogView</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-type">BoardInfo</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Types.html#BoardConstraints"><span class="hs-identifier hs-type">BoardConstraints</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Imageboard.Types.html#ThreadHead"><span class="hs-identifier hs-type">ThreadHead</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
 </span><span id="line-46"></span><span id="catalogView"><span class="annot"><span class="annottext">catalogView :: BoardInfo -&gt; BoardConstraints -&gt; [Text] -&gt; [ThreadHead] -&gt; Html
-</span><a href="Imageboard.Pages.Catalog.html#catalogView"><span class="hs-identifier hs-var hs-var">catalogView</span></a></span></span><span> </span><span id="local-6989586621679160151"><span id="local-6989586621679160152"><span id="local-6989586621679160153"><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-type">BoardInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span> </span><span id="local-6989586621679160141"><span id="local-6989586621679160142"><span id="local-6989586621679160143"><span id="local-6989586621679160144"><span id="local-6989586621679160145"><span id="local-6989586621679160146"><span class="annot"><a href="Imageboard.Types.html#Constraints"><span class="hs-identifier hs-type">Constraints</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span></span></span><span> </span><span id="local-6989586621679160133"><span class="annot"><span class="annottext">bs :: [Text]
-</span><a href="#local-6989586621679160133"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span id="local-6989586621679160132"><span class="annot"><span class="annottext">ts :: [ThreadHead]
-</span><a href="#local-6989586621679160132"><span class="hs-identifier hs-var">ts</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span>
-</span><span id="line-47"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679160131"><span class="annot"><span class="annottext">header :: Text
-</span><a href="#local-6989586621679160131"><span class="hs-identifier hs-var hs-var">header</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><a href="Imageboard.Pages.Catalog.html#catalogView"><span class="hs-identifier hs-var hs-var">catalogView</span></a></span></span><span> </span><span id="local-6989586621679160145"><span id="local-6989586621679160146"><span id="local-6989586621679160147"><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-type">BoardInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span> </span><span id="local-6989586621679160135"><span id="local-6989586621679160136"><span id="local-6989586621679160137"><span id="local-6989586621679160138"><span id="local-6989586621679160139"><span id="local-6989586621679160140"><span class="annot"><a href="Imageboard.Types.html#Constraints"><span class="hs-identifier hs-type">Constraints</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span></span></span><span> </span><span id="local-6989586621679160127"><span class="annot"><span class="annottext">bs :: [Text]
+</span><a href="#local-6989586621679160127"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span id="local-6989586621679160126"><span class="annot"><span class="annottext">ts :: [ThreadHead]
+</span><a href="#local-6989586621679160126"><span class="hs-identifier hs-var">ts</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679160125"><span class="annot"><span class="annottext">header :: Text
+</span><a href="#local-6989586621679160125"><span class="hs-identifier hs-var hs-var">header</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160153"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><a href="#local-6989586621679160147"><span class="hs-identifier hs-var">name</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/ - &quot;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160152"><span class="hs-identifier hs-var">title</span></a></span><span> </span><span class="hs-keyword">in</span><span>
+</span><a href="#local-6989586621679160146"><span class="hs-identifier hs-var">title</span></a></span><span> </span><span class="hs-keyword">in</span><span>
 </span><span id="line-48"></span><span>    </span><span class="annot"><span class="annottext">Text -&gt; [Text] -&gt; Html -&gt; Html
 </span><a href="Imageboard.Pages.Common.html#commonHtml"><span class="hs-identifier hs-var">commonHtml</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160131"><span class="hs-identifier hs-var">header</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><a href="#local-6989586621679160125"><span class="hs-identifier hs-var">header</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="hs-string">&quot; - catalog&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[Text]
-</span><a href="#local-6989586621679160133"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+</span><a href="#local-6989586621679160127"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-49"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
@@ -245,9 +245,9 @@ forall a. ToMarkup a =&gt; a -&gt; Html
 </span><span class="hs-identifier hs-var">H.toHtml</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; Html) -&gt; Text -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160131"><span class="hs-identifier hs-var">header</span></a></span><span>
+</span><a href="#local-6989586621679160125"><span class="hs-identifier hs-var">header</span></a></span><span>
 </span><span id="line-50"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Bool
-</span><a href="#local-6989586621679160146"><span class="hs-identifier hs-var">isLocked</span></a></span><span>
+</span><a href="#local-6989586621679160140"><span class="hs-identifier hs-var">isLocked</span></a></span><span>
 </span><span id="line-51"></span><span>            </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
 </span><span class="hs-identifier hs-var">H.h3</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Board is locked.&quot;</span></span><span>
 </span><span id="line-52"></span><span>            </span><span class="hs-keyword">else</span><span> </span><span class="hs-keyword">do</span><span>
@@ -268,7 +268,7 @@ forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
 </span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;invisible&quot;</span></span><span>
 </span><span id="line-55"></span><span>                </span><span class="annot"><span class="annottext">Text -&gt; Html
 </span><a href="Imageboard.Pages.Common.html#threadForm"><span class="hs-identifier hs-var">threadForm</span></a></span><span> </span><span class="annot"><span class="annottext">Text
-</span><a href="#local-6989586621679160153"><span class="hs-identifier hs-var">name</span></a></span><span>
+</span><a href="#local-6989586621679160147"><span class="hs-identifier hs-var">name</span></a></span><span>
 </span><span id="line-56"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
 </span><a href="Imageboard.Pages.Common.html#addTopBottom"><span class="hs-identifier hs-var">addTopBottom</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -302,4 +302,4 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><a href="Imageboard.Pages.Catalog.html#catalogThread"><span class="hs-identifier hs-var">catalogThread</span></a></span><span> </span><span class="annot"><span class="annottext">(ThreadHead -&gt; Html) -&gt; [ThreadHead] -&gt; [Html]
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">[ThreadHead]
-</span><a href="#local-6989586621679160132"><span class="hs-identifier hs-var">ts</span></a></span></pre></body></html>
+</span><a href="#local-6989586621679160126"><span class="hs-identifier hs-var">ts</span></a></span></pre></body></html>

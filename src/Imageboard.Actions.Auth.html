@@ -17,21 +17,21 @@
 </span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Password.Bcrypt</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">P</span></span><span>
 </span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Crypto.Random</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">getRandomBytes</span></span><span class="hs-special">)</span><span>
 </span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Pages.html"><span class="hs-identifier">Imageboard.Pages</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier">errorView</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Pages.Account.html#loginView"><span class="hs-identifier">loginView</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Pages.Account.html#loggedInPage"><span class="hs-identifier">loggedInPage</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Pages.Account.html#adminLoggedInPage"><span class="hs-identifier">adminLoggedInPage</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Utils.html"><span class="hs-identifier">Imageboard.Utils</span></a></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html"><span class="hs-identifier">Imageboard.Actions.Common</span></a></span><span>
 </span><span id="line-21"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Database.html"><span class="hs-identifier">Imageboard.Database</span></a></span><span>
 </span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Types.html"><span class="hs-identifier">Imageboard.Types</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier">AccountInfo</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span class="annot"><a href="Imageboard.Types.html#SessionKey"><span class="hs-identifier">SessionKey</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Role"><span class="hs-identifier">Role</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><span id="line-23"></span><span>
-</span><span id="line-24"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#setSessionCookie"><span class="hs-identifier hs-type">setSessionCookie</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#SessionKey"><span class="hs-identifier hs-type">SessionKey</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-25"></span><span id="setSessionCookie"><span class="annot"><span class="annottext">setSessionCookie :: SessionKey -&gt; ActionM ()
-</span><a href="Imageboard.Actions.Auth.html#setSessionCookie"><span class="hs-identifier hs-var hs-var">setSessionCookie</span></a></span></span><span> </span><span id="local-6989586621679160734"><span class="annot"><span class="annottext">st :: SessionKey
-</span><a href="#local-6989586621679160734"><span class="hs-identifier hs-var">st</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; SessionKey -&gt; ActionM ()
+</span><span id="line-24"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#setSessionCookie"><span class="hs-identifier hs-type">setSessionCookie</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#SessionKey"><span class="hs-identifier hs-type">SessionKey</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-25"></span><span id="setSessionCookie"><span class="annot"><span class="annottext">setSessionCookie :: SessionKey -&gt; Action
+</span><a href="Imageboard.Actions.Auth.html#setSessionCookie"><span class="hs-identifier hs-var hs-var">setSessionCookie</span></a></span></span><span> </span><span id="local-6989586621679160730"><span class="annot"><span class="annottext">st :: SessionKey
+</span><a href="#local-6989586621679160730"><span class="hs-identifier hs-var">st</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; SessionKey -&gt; Action
 forall (m :: * -&gt; *) e.
 (Monad m, ScottyError e) =&gt;
 SessionKey -&gt; SessionKey -&gt; ActionT e m ()
-</span><span class="hs-identifier hs-var">SC.setSimpleCookie</span></span><span> </span><span class="annot"><span class="hs-string">&quot;session-token&quot;</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; ActionM ()) -&gt; SessionKey -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">SC.setSimpleCookie</span></span><span> </span><span class="annot"><span class="hs-string">&quot;session-token&quot;</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; Action) -&gt; SessionKey -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160734"><span class="hs-identifier hs-var">st</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; SessionKey -&gt; SessionKey
+</span><a href="#local-6989586621679160730"><span class="hs-identifier hs-var">st</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; SessionKey -&gt; SessionKey
 forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="hs-string">&quot;; SameSite=Strict; Max-Age=3600&quot;</span></span><span>
 </span><span id="line-26"></span><span>
@@ -50,32 +50,32 @@ forall (m :: * -&gt; *) byteArray.
 Int -&gt; m byteArray
 </span><span class="hs-identifier hs-var">getRandomBytes</span></span><span> </span><span class="annot"><span class="hs-number">72</span></span><span>
 </span><span id="line-29"></span><span>
-</span><span id="line-30"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-type">disallow</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-31"></span><span id="disallow"><span class="annot"><span class="annottext">disallow :: SessionKey -&gt; ActionM ()
-</span><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-var hs-var">disallow</span></a></span></span><span> </span><span id="local-6989586621679160727"><span class="annot"><span class="annottext">msg :: SessionKey
-</span><a href="#local-6989586621679160727"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-32"></span><span>    </span><span class="annot"><span class="annottext">Status -&gt; ActionM ()
+</span><span id="line-30"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-type">disallow</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-31"></span><span id="disallow"><span class="annot"><span class="annottext">disallow :: SessionKey -&gt; Action
+</span><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-var hs-var">disallow</span></a></span></span><span> </span><span id="local-6989586621679160723"><span class="annot"><span class="annottext">msg :: SessionKey
+</span><a href="#local-6989586621679160723"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-32"></span><span>    </span><span class="annot"><span class="annottext">Status -&gt; Action
 </span><span class="hs-identifier hs-var">S.status</span></span><span> </span><span class="annot"><span class="annottext">Status
 </span><span class="hs-identifier hs-var">unauthorized401</span></span><span>
-</span><span id="line-33"></span><span>    </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionM ()
+</span><span id="line-33"></span><span>    </span><span class="annot"><span class="annottext">SessionKey -&gt; Action
 forall (m :: * -&gt; *) e.
 (Monad m, ScottyError e) =&gt;
 SessionKey -&gt; ActionT e m ()
 </span><span class="hs-identifier hs-var">SC.deleteCookie</span></span><span> </span><span class="annot"><span class="hs-string">&quot;session-token&quot;</span></span><span>
-</span><span id="line-34"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+</span><span id="line-34"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; Html -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Html
 </span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160727"><span class="hs-identifier hs-var">msg</span></a></span><span>
+</span><a href="#local-6989586621679160723"><span class="hs-identifier hs-var">msg</span></a></span><span>
 </span><span id="line-35"></span><span>
-</span><span id="line-36"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#allowByRole"><span class="hs-identifier hs-type">allowByRole</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Types.html#Role"><span class="hs-identifier hs-type">Role</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-37"></span><span id="allowByRole"><span class="annot"><span class="annottext">allowByRole :: (Role -&gt; Bool) -&gt; ActionM () -&gt; ActionM ()
-</span><a href="Imageboard.Actions.Auth.html#allowByRole"><span class="hs-identifier hs-var hs-var">allowByRole</span></a></span></span><span> </span><span id="local-6989586621679160722"><span class="annot"><span class="annottext">f :: Role -&gt; Bool
-</span><a href="#local-6989586621679160722"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679160721"><span class="annot"><span class="annottext">action :: ActionM ()
-</span><a href="#local-6989586621679160721"><span class="hs-identifier hs-var">action</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-38"></span><span>    </span><span id="local-6989586621679160720"><span class="annot"><span class="annottext">Maybe SessionKey
-</span><a href="#local-6989586621679160720"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionT Text IO (Maybe SessionKey)
+</span><span id="line-36"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#allowByRole"><span class="hs-identifier hs-type">allowByRole</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Types.html#Role"><span class="hs-identifier hs-type">Role</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-37"></span><span id="allowByRole"><span class="annot"><span class="annottext">allowByRole :: (Role -&gt; Bool) -&gt; Action -&gt; Action
+</span><a href="Imageboard.Actions.Auth.html#allowByRole"><span class="hs-identifier hs-var hs-var">allowByRole</span></a></span></span><span> </span><span id="local-6989586621679160718"><span class="annot"><span class="annottext">f :: Role -&gt; Bool
+</span><a href="#local-6989586621679160718"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679160717"><span class="annot"><span class="annottext">action :: Action
+</span><a href="#local-6989586621679160717"><span class="hs-identifier hs-var">action</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-38"></span><span>    </span><span id="local-6989586621679160716"><span class="annot"><span class="annottext">Maybe SessionKey
+</span><a href="#local-6989586621679160716"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionT Text IO (Maybe SessionKey)
 forall (m :: * -&gt; *) e.
 (Monad m, ScottyError e) =&gt;
 SessionKey -&gt; ActionT e m (Maybe SessionKey)
@@ -89,18 +89,18 @@ forall e (m :: * -&gt; *) a. ExceptT e m a -&gt; m (Either e a)
 -&gt; ActionT Text IO (Either SessionKey ())
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-40"></span><span>        </span><span id="local-6989586621679160717"><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160717"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
+</span><span id="line-40"></span><span>        </span><span id="local-6989586621679160713"><span class="annot"><span class="annottext">SessionKey
+</span><a href="#local-6989586621679160713"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
 -&gt; Maybe SessionKey
 -&gt; ExceptT SessionKey (ActionT Text IO) SessionKey
 forall (m :: * -&gt; *) b a. Monad m =&gt; b -&gt; Maybe a -&gt; ExceptT b m a
-</span><a href="Imageboard.Utils.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Unathorized&quot;</span></span><span> </span><span class="annot"><span class="annottext">Maybe SessionKey
-</span><a href="#local-6989586621679160720"><span class="hs-identifier hs-var">key</span></a></span><span>
-</span><span id="line-41"></span><span>        </span><span id="local-6989586621679160713"><span id="local-6989586621679160714"><span id="local-6989586621679160715"><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier hs-type">AccountInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
+</span><a href="Imageboard.Actions.Common.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Unathorized&quot;</span></span><span> </span><span class="annot"><span class="annottext">Maybe SessionKey
+</span><a href="#local-6989586621679160716"><span class="hs-identifier hs-var">key</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span id="local-6989586621679160709"><span id="local-6989586621679160710"><span id="local-6989586621679160711"><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier hs-type">AccountInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
 -&gt; Maybe AccountInfo
 -&gt; ExceptT SessionKey (ActionT Text IO) AccountInfo
 forall (m :: * -&gt; *) b a. Monad m =&gt; b -&gt; Maybe a -&gt; ExceptT b m a
-</span><a href="Imageboard.Utils.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Your session token is invalid or expired&quot;</span></span><span>
+</span><a href="Imageboard.Actions.Common.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Your session token is invalid or expired&quot;</span></span><span>
 </span><span id="line-42"></span><span>            </span><span class="annot"><span class="annottext">(Maybe AccountInfo
  -&gt; ExceptT SessionKey (ActionT Text IO) AccountInfo)
 -&gt; ExceptT SessionKey (ActionT Text IO) (Maybe AccountInfo)
@@ -116,10 +116,10 @@ forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; IO (Maybe AccountInfo)
 </span><a href="Imageboard.Database.html#getAccountByToken"><span class="hs-identifier hs-var">getAccountByToken</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160717"><span class="hs-identifier hs-var">k</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679160713"><span class="hs-identifier hs-var">k</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-43"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Role -&gt; Bool
-</span><a href="#local-6989586621679160722"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Role
-</span><a href="#local-6989586621679160713"><span class="hs-keyword hs-var">role</span></a></span><span> </span><span>
+</span><a href="#local-6989586621679160718"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Role
+</span><a href="#local-6989586621679160709"><span class="hs-keyword hs-var">role</span></a></span><span> </span><span>
 </span><span id="line-44"></span><span>            </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">() -&gt; ExceptT SessionKey (ActionT Text IO) ()
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
@@ -127,32 +127,32 @@ forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 forall e (m :: * -&gt; *) a. MonadError e m =&gt; e -&gt; m a
 </span><span class="hs-identifier hs-var">throwError</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Insufficient permissions&quot;</span></span><span>
 </span><span id="line-46"></span><span>    </span><span class="annot"><span class="annottext">ActionT Text IO (Either SessionKey ())
--&gt; (Either SessionKey () -&gt; ActionM ()) -&gt; ActionM ()
+-&gt; (Either SessionKey () -&gt; Action) -&gt; Action
 forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
-</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; ActionM ())
--&gt; (() -&gt; ActionM ()) -&gt; Either SessionKey () -&gt; ActionM ()
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; Action)
+-&gt; (() -&gt; Action) -&gt; Either SessionKey () -&gt; Action
 forall a c b. (a -&gt; c) -&gt; (b -&gt; c) -&gt; Either a b -&gt; c
 </span><span class="hs-identifier hs-var">either</span></span><span>
-</span><span id="line-47"></span><span>        </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionM ()
+</span><span id="line-47"></span><span>        </span><span class="annot"><span class="annottext">SessionKey -&gt; Action
 </span><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-var">disallow</span></a></span><span>
-</span><span id="line-48"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ActionM () -&gt; () -&gt; ActionM ()
+</span><span id="line-48"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Action -&gt; () -&gt; Action
 forall a b. a -&gt; b -&gt; a
-</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">ActionM ()
-</span><a href="#local-6989586621679160721"><span class="hs-identifier hs-var">action</span></a></span><span class="hs-special">)</span><span>
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Action
+</span><a href="#local-6989586621679160717"><span class="hs-identifier hs-var">action</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-49"></span><span>
 </span><span id="line-50"></span><span class="hs-comment">-- | Allow any logged in user to perform an action.</span><span>
-</span><span id="line-51"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-type">allowLoggedIn</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-52"></span><span id="allowLoggedIn"><span class="annot"><span class="annottext">allowLoggedIn :: ActionM () -&gt; ActionM ()
-</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var hs-var">allowLoggedIn</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Role -&gt; Bool) -&gt; ActionM () -&gt; ActionM ()
+</span><span id="line-51"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-type">allowLoggedIn</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-52"></span><span id="allowLoggedIn"><span class="annot"><span class="annottext">allowLoggedIn :: Action -&gt; Action
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var hs-var">allowLoggedIn</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Role -&gt; Bool) -&gt; Action -&gt; Action
 </span><a href="Imageboard.Actions.Auth.html#allowByRole"><span class="hs-identifier hs-var">allowByRole</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bool -&gt; Role -&gt; Bool
 forall a b. a -&gt; b -&gt; a
 </span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">True</span></span><span class="hs-special">)</span><span>
 </span><span id="line-53"></span><span>
 </span><span id="line-54"></span><span class="hs-comment">-- | Allow admin user to perform an action.</span><span>
-</span><span id="line-55"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-type">allowAdmin</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-56"></span><span id="allowAdmin"><span class="annot"><span class="annottext">allowAdmin :: ActionM () -&gt; ActionM ()
-</span><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-var hs-var">allowAdmin</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Role -&gt; Bool) -&gt; ActionM () -&gt; ActionM ()
+</span><span id="line-55"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-type">allowAdmin</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-56"></span><span id="allowAdmin"><span class="annot"><span class="annottext">allowAdmin :: Action -&gt; Action
+</span><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-var hs-var">allowAdmin</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Role -&gt; Bool) -&gt; Action -&gt; Action
 </span><a href="Imageboard.Actions.Auth.html#allowByRole"><span class="hs-identifier hs-var">allowByRole</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Role -&gt; Role -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span class="annot"><span class="annottext">Role
@@ -160,24 +160,24 @@ forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span id="line-57"></span><span>
 </span><span id="line-58"></span><span class="hs-comment">-- | If user is logged in, render his account page. </span><span>
 </span><span id="line-59"></span><span class="hs-comment">-- Otherwise render login form.</span><span>
-</span><span id="line-60"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#modPage"><span class="hs-identifier hs-type">modPage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-61"></span><span id="modPage"><span class="annot"><span class="annottext">modPage :: ActionM ()
+</span><span id="line-60"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#modPage"><span class="hs-identifier hs-type">modPage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-61"></span><span id="modPage"><span class="annot"><span class="annottext">modPage :: Action
 </span><a href="Imageboard.Actions.Auth.html#modPage"><span class="hs-identifier hs-var hs-var">modPage</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-62"></span><span>    </span><span id="local-6989586621679160701"><span class="annot"><span class="annottext">Maybe SessionKey
-</span><a href="#local-6989586621679160701"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionT Text IO (Maybe SessionKey)
+</span><span id="line-62"></span><span>    </span><span id="local-6989586621679160697"><span class="annot"><span class="annottext">Maybe SessionKey
+</span><a href="#local-6989586621679160697"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionT Text IO (Maybe SessionKey)
 forall (m :: * -&gt; *) e.
 (Monad m, ScottyError e) =&gt;
 SessionKey -&gt; ActionT e m (Maybe SessionKey)
 </span><span class="hs-identifier hs-var">SC.getCookie</span></span><span> </span><span class="annot"><span class="hs-string">&quot;session-token&quot;</span></span><span>
 </span><span id="line-63"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Maybe SessionKey
-</span><a href="#local-6989586621679160701"><span class="hs-identifier hs-var">key</span></a></span><span> </span><span class="hs-keyword">of</span><span>
-</span><span id="line-64"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+</span><a href="#local-6989586621679160697"><span class="hs-identifier hs-var">key</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-64"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; Html -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
 </span><a href="Imageboard.Pages.Account.html#loginView"><span class="hs-identifier hs-var">loginView</span></a></span><span>
-</span><span id="line-65"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160700"><span class="annot"><span class="annottext">k :: SessionKey
-</span><a href="#local-6989586621679160700"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-65"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160696"><span class="annot"><span class="annottext">k :: SessionKey
+</span><a href="#local-6989586621679160696"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
 </span><span id="line-66"></span><span>            </span><span class="annot"><span class="annottext">ExceptT SessionKey (ActionT Text IO) ()
 -&gt; ActionT Text IO (Either SessionKey ())
 forall e (m :: * -&gt; *) a. ExceptT e m a -&gt; m (Either e a)
@@ -187,12 +187,12 @@ forall e (m :: * -&gt; *) a. ExceptT e m a -&gt; m (Either e a)
 -&gt; ActionT Text IO (Either SessionKey ())
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-67"></span><span>                </span><span id="local-6989586621679160699"><span class="annot"><span class="annottext">acc :: AccountInfo
-</span><a href="#local-6989586621679160699"><span class="hs-identifier hs-var">acc</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679160696"><span id="local-6989586621679160697"><span id="local-6989586621679160698"><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier hs-type">AccountInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
+</span><span id="line-67"></span><span>                </span><span id="local-6989586621679160695"><span class="annot"><span class="annottext">acc :: AccountInfo
+</span><a href="#local-6989586621679160695"><span class="hs-identifier hs-var">acc</span></a></span></span><span class="hs-glyph">@</span><span class="hs-special">(</span><span id="local-6989586621679160692"><span id="local-6989586621679160693"><span id="local-6989586621679160694"><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier hs-type">AccountInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
 -&gt; Maybe AccountInfo
 -&gt; ExceptT SessionKey (ActionT Text IO) AccountInfo
 forall (m :: * -&gt; *) b a. Monad m =&gt; b -&gt; Maybe a -&gt; ExceptT b m a
-</span><a href="Imageboard.Utils.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Your session token is invalid or expired&quot;</span></span><span> </span><span>
+</span><a href="Imageboard.Actions.Common.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Your session token is invalid or expired&quot;</span></span><span> </span><span>
 </span><span id="line-68"></span><span>                    </span><span class="annot"><span class="annottext">(Maybe AccountInfo
  -&gt; ExceptT SessionKey (ActionT Text IO) AccountInfo)
 -&gt; ExceptT SessionKey (ActionT Text IO) (Maybe AccountInfo)
@@ -208,12 +208,12 @@ forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; IO (Maybe AccountInfo)
 </span><a href="Imageboard.Database.html#getAccountByToken"><span class="hs-identifier hs-var">getAccountByToken</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160700"><span class="hs-identifier hs-var">k</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679160696"><span class="hs-identifier hs-var">k</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-69"></span><span>                </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Role
-</span><a href="#local-6989586621679160696"><span class="hs-keyword hs-var">role</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><a href="#local-6989586621679160692"><span class="hs-keyword hs-var">role</span></a></span><span> </span><span class="hs-keyword">of</span><span>
 </span><span id="line-70"></span><span>                    </span><span class="annot"><a href="Imageboard.Types.html#Admin"><span class="hs-identifier hs-type">Admin</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span> </span><span>
-</span><span id="line-71"></span><span>                        </span><span id="local-6989586621679160695"><span class="annot"><span class="annottext">[BoardInfo]
-</span><a href="#local-6989586621679160695"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [BoardInfo] -&gt; ExceptT SessionKey (ActionT Text IO) [BoardInfo]
+</span><span id="line-71"></span><span>                        </span><span id="local-6989586621679160691"><span class="annot"><span class="annottext">[BoardInfo]
+</span><a href="#local-6989586621679160691"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [BoardInfo] -&gt; ExceptT SessionKey (ActionT Text IO) [BoardInfo]
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 </span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO [BoardInfo]
  -&gt; ExceptT SessionKey (ActionT Text IO) [BoardInfo])
@@ -222,8 +222,8 @@ forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">IO [BoardInfo]
 </span><a href="Imageboard.Database.html#getBoardInfos"><span class="hs-identifier hs-var">getBoardInfos</span></a></span><span>
-</span><span id="line-72"></span><span>                        </span><span id="local-6989586621679160693"><span class="annot"><span class="annottext">[AccountInfo]
-</span><a href="#local-6989586621679160693"><span class="hs-keyword hs-var">as</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [AccountInfo]
+</span><span id="line-72"></span><span>                        </span><span id="local-6989586621679160689"><span class="annot"><span class="annottext">[AccountInfo]
+</span><a href="#local-6989586621679160689"><span class="hs-keyword hs-var">as</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [AccountInfo]
 -&gt; ExceptT SessionKey (ActionT Text IO) [AccountInfo]
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 </span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO [AccountInfo]
@@ -233,24 +233,24 @@ forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">IO [AccountInfo]
 </span><a href="Imageboard.Database.html#getAccounts"><span class="hs-identifier hs-var">getAccounts</span></a></span><span>
-</span><span id="line-73"></span><span>                        </span><span class="annot"><span class="annottext">ActionM () -&gt; ExceptT SessionKey (ActionT Text IO) ()
+</span><span id="line-73"></span><span>                        </span><span class="annot"><span class="annottext">Action -&gt; ExceptT SessionKey (ActionT Text IO) ()
 forall (t :: (* -&gt; *) -&gt; * -&gt; *) (m :: * -&gt; *) a.
 (MonadTrans t, Monad m) =&gt;
 m a -&gt; t m a
-</span><span class="hs-identifier hs-var">lift</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ExceptT SessionKey (ActionT Text IO) ())
--&gt; ActionM () -&gt; ExceptT SessionKey (ActionT Text IO) ()
+</span><span class="hs-identifier hs-var">lift</span></span><span> </span><span class="annot"><span class="annottext">(Action -&gt; ExceptT SessionKey (ActionT Text IO) ())
+-&gt; Action -&gt; ExceptT SessionKey (ActionT Text IO) ()
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; Html -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">AccountInfo -&gt; [BoardInfo] -&gt; [AccountInfo] -&gt; Html
 </span><a href="Imageboard.Pages.Account.html#adminLoggedInPage"><span class="hs-identifier hs-var">adminLoggedInPage</span></a></span><span> </span><span class="annot"><span class="annottext">AccountInfo
-</span><a href="#local-6989586621679160699"><span class="hs-identifier hs-var">acc</span></a></span><span> </span><span class="annot"><span class="annottext">[BoardInfo]
-</span><a href="#local-6989586621679160695"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">[AccountInfo]
-</span><a href="#local-6989586621679160693"><span class="hs-keyword hs-var">as</span></a></span><span>
+</span><a href="#local-6989586621679160695"><span class="hs-identifier hs-var">acc</span></a></span><span> </span><span class="annot"><span class="annottext">[BoardInfo]
+</span><a href="#local-6989586621679160691"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">[AccountInfo]
+</span><a href="#local-6989586621679160689"><span class="hs-keyword hs-var">as</span></a></span><span>
 </span><span id="line-74"></span><span>                    </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-75"></span><span>                        </span><span id="local-6989586621679160690"><span class="annot"><span class="annottext">[SessionKey]
-</span><a href="#local-6989586621679160690"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [SessionKey]
+</span><span id="line-75"></span><span>                        </span><span id="local-6989586621679160686"><span class="annot"><span class="annottext">[SessionKey]
+</span><a href="#local-6989586621679160686"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO [SessionKey]
 -&gt; ExceptT SessionKey (ActionT Text IO) [SessionKey]
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 </span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO [SessionKey]
@@ -260,51 +260,51 @@ forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">IO [SessionKey]
 </span><a href="Imageboard.Database.html#getBoardNames"><span class="hs-identifier hs-var">getBoardNames</span></a></span><span> </span><span>
-</span><span id="line-76"></span><span>                        </span><span class="annot"><span class="annottext">ActionM () -&gt; ExceptT SessionKey (ActionT Text IO) ()
+</span><span id="line-76"></span><span>                        </span><span class="annot"><span class="annottext">Action -&gt; ExceptT SessionKey (ActionT Text IO) ()
 forall (t :: (* -&gt; *) -&gt; * -&gt; *) (m :: * -&gt; *) a.
 (MonadTrans t, Monad m) =&gt;
 m a -&gt; t m a
-</span><span class="hs-identifier hs-var">lift</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ExceptT SessionKey (ActionT Text IO) ())
--&gt; ActionM () -&gt; ExceptT SessionKey (ActionT Text IO) ()
+</span><span class="hs-identifier hs-var">lift</span></span><span> </span><span class="annot"><span class="annottext">(Action -&gt; ExceptT SessionKey (ActionT Text IO) ())
+-&gt; Action -&gt; ExceptT SessionKey (ActionT Text IO) ()
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; Html -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">AccountInfo -&gt; [SessionKey] -&gt; Html
 </span><a href="Imageboard.Pages.Account.html#loggedInPage"><span class="hs-identifier hs-var">loggedInPage</span></a></span><span> </span><span class="annot"><span class="annottext">AccountInfo
-</span><a href="#local-6989586621679160699"><span class="hs-identifier hs-var">acc</span></a></span><span> </span><span class="annot"><span class="annottext">[SessionKey]
-</span><a href="#local-6989586621679160690"><span class="hs-identifier hs-var">bs</span></a></span><span>
+</span><a href="#local-6989586621679160695"><span class="hs-identifier hs-var">acc</span></a></span><span> </span><span class="annot"><span class="annottext">[SessionKey]
+</span><a href="#local-6989586621679160686"><span class="hs-identifier hs-var">bs</span></a></span><span>
 </span><span id="line-77"></span><span>            </span><span class="annot"><span class="annottext">ActionT Text IO (Either SessionKey ())
--&gt; (Either SessionKey () -&gt; ActionM ()) -&gt; ActionM ()
+-&gt; (Either SessionKey () -&gt; Action) -&gt; Action
 forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
-</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; ActionM ())
--&gt; (() -&gt; ActionM ()) -&gt; Either SessionKey () -&gt; ActionM ()
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; Action)
+-&gt; (() -&gt; Action) -&gt; Either SessionKey () -&gt; Action
 forall a c b. (a -&gt; c) -&gt; (b -&gt; c) -&gt; Either a b -&gt; c
-</span><span class="hs-identifier hs-var">either</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionM ()
-</span><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-var">disallow</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ActionM () -&gt; () -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">either</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Action
+</span><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-var">disallow</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Action -&gt; () -&gt; Action
 forall a b. a -&gt; b -&gt; a
-</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">ActionM ()
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">Action
 forall a. ActionM a
 </span><span class="hs-identifier hs-var">S.finish</span></span><span class="hs-special">)</span><span>
 </span><span id="line-78"></span><span>
 </span><span id="line-79"></span><span class="hs-comment">-- | Try to log in a user with supplied data from login form.</span><span>
-</span><span id="line-80"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#tryLogin"><span class="hs-identifier hs-type">tryLogin</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-81"></span><span id="tryLogin"><span class="annot"><span class="annottext">tryLogin :: ActionM ()
+</span><span id="line-80"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#tryLogin"><span class="hs-identifier hs-type">tryLogin</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-81"></span><span id="tryLogin"><span class="annot"><span class="annottext">tryLogin :: Action
 </span><a href="Imageboard.Actions.Auth.html#tryLogin"><span class="hs-identifier hs-var hs-var">tryLogin</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-82"></span><span>    </span><span id="local-6989586621679160687"><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160687"><span class="hs-identifier hs-var">user</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM SessionKey
+</span><span id="line-82"></span><span>    </span><span id="local-6989586621679160683"><span class="annot"><span class="annottext">SessionKey
+</span><a href="#local-6989586621679160683"><span class="hs-identifier hs-var">user</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM SessionKey
 forall a. Parsable a =&gt; Text -&gt; ActionM a
 </span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;username&quot;</span></span><span>
-</span><span id="line-83"></span><span>    </span><span id="local-6989586621679160685"><span class="annot"><span class="annottext">Password
-</span><a href="#local-6989586621679160685"><span class="hs-identifier hs-var">pass</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Password
+</span><span id="line-83"></span><span>    </span><span id="local-6989586621679160681"><span class="annot"><span class="annottext">Password
+</span><a href="#local-6989586621679160681"><span class="hs-identifier hs-var">pass</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Password
 </span><span class="hs-identifier hs-var">P.mkPassword</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; Password)
 -&gt; ActionM SessionKey -&gt; ActionT Text IO Password
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM SessionKey
 forall a. Parsable a =&gt; Text -&gt; ActionM a
 </span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;password&quot;</span></span><span>
-</span><span id="line-84"></span><span>    </span><span id="local-6989586621679160683"><span class="annot"><span class="annottext">Maybe (PasswordHash Bcrypt)
-</span><a href="#local-6989586621679160683"><span class="hs-identifier hs-var">hash</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO (Maybe (PasswordHash Bcrypt))
+</span><span id="line-84"></span><span>    </span><span id="local-6989586621679160679"><span class="annot"><span class="annottext">Maybe (PasswordHash Bcrypt)
+</span><a href="#local-6989586621679160679"><span class="hs-identifier hs-var">hash</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO (Maybe (PasswordHash Bcrypt))
 -&gt; ActionT Text IO (Maybe (PasswordHash Bcrypt))
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 </span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO (Maybe (PasswordHash Bcrypt))
@@ -314,95 +314,95 @@ forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; IO (Maybe (PasswordHash Bcrypt))
 </span><a href="Imageboard.Database.html#getPasswordHash"><span class="hs-identifier hs-var">getPasswordHash</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160687"><span class="hs-identifier hs-var">user</span></a></span><span>
+</span><a href="#local-6989586621679160683"><span class="hs-identifier hs-var">user</span></a></span><span>
 </span><span id="line-85"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Maybe (PasswordHash Bcrypt)
-</span><a href="#local-6989586621679160683"><span class="hs-identifier hs-var">hash</span></a></span><span> </span><span class="hs-keyword">of</span><span>
-</span><span id="line-86"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160681"><span class="annot"><span class="annottext">h :: PasswordHash Bcrypt
-</span><a href="#local-6989586621679160681"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Password -&gt; PasswordHash Bcrypt -&gt; PasswordCheck
+</span><a href="#local-6989586621679160679"><span class="hs-identifier hs-var">hash</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-86"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160677"><span class="annot"><span class="annottext">h :: PasswordHash Bcrypt
+</span><a href="#local-6989586621679160677"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Password -&gt; PasswordHash Bcrypt -&gt; PasswordCheck
 </span><span class="hs-identifier hs-var">P.checkPassword</span></span><span> </span><span class="annot"><span class="annottext">Password
-</span><a href="#local-6989586621679160685"><span class="hs-identifier hs-var">pass</span></a></span><span> </span><span class="annot"><span class="annottext">PasswordHash Bcrypt
-</span><a href="#local-6989586621679160681"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><a href="#local-6989586621679160681"><span class="hs-identifier hs-var">pass</span></a></span><span> </span><span class="annot"><span class="annottext">PasswordHash Bcrypt
+</span><a href="#local-6989586621679160677"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="hs-keyword">of</span><span>
 </span><span id="line-87"></span><span>                </span><span class="annot"><span class="hs-identifier hs-type">P.PasswordCheckSuccess</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-88"></span><span>                    </span><span id="local-6989586621679160678"><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160678"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO SessionKey -&gt; ActionM SessionKey
+</span><span id="line-88"></span><span>                    </span><span id="local-6989586621679160674"><span class="annot"><span class="annottext">SessionKey
+</span><a href="#local-6989586621679160674"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO SessionKey -&gt; ActionM SessionKey
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 </span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO SessionKey -&gt; ActionM SessionKey)
 -&gt; IO SessionKey -&gt; ActionM SessionKey
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">IO SessionKey
 </span><a href="Imageboard.Actions.Auth.html#randomToken"><span class="hs-identifier hs-var">randomToken</span></a></span><span>
-</span><span id="line-89"></span><span>                    </span><span class="annot"><span class="annottext">IO () -&gt; ActionM ()
+</span><span id="line-89"></span><span>                    </span><span class="annot"><span class="annottext">IO () -&gt; Action
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
-</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO () -&gt; ActionM ()) -&gt; IO () -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO () -&gt; Action) -&gt; IO () -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; SessionKey -&gt; IO ()
 </span><a href="Imageboard.Database.html#insertSessionToken"><span class="hs-identifier hs-var">insertSessionToken</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160687"><span class="hs-identifier hs-var">user</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160678"><span class="hs-identifier hs-var">key</span></a></span><span>
-</span><span id="line-90"></span><span>                    </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionM ()
+</span><a href="#local-6989586621679160683"><span class="hs-identifier hs-var">user</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
+</span><a href="#local-6989586621679160674"><span class="hs-identifier hs-var">key</span></a></span><span>
+</span><span id="line-90"></span><span>                    </span><span class="annot"><span class="annottext">SessionKey -&gt; Action
 </span><a href="Imageboard.Actions.Auth.html#setSessionCookie"><span class="hs-identifier hs-var">setSessionCookie</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160678"><span class="hs-identifier hs-var">key</span></a></span><span>
-</span><span id="line-91"></span><span>                    </span><span class="annot"><span class="annottext">Text -&gt; ActionM ()
+</span><a href="#local-6989586621679160674"><span class="hs-identifier hs-var">key</span></a></span><span>
+</span><span id="line-91"></span><span>                    </span><span class="annot"><span class="annottext">Text -&gt; Action
 forall a. Text -&gt; ActionM a
 </span><span class="hs-identifier hs-var">S.redirect</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/mod&quot;</span></span><span>
-</span><span id="line-92"></span><span>                </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionM ()
+</span><span id="line-92"></span><span>                </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Action
 </span><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-var">disallow</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Wrong password&quot;</span></span><span>
-</span><span id="line-93"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionM ()
+</span><span id="line-93"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Action
 </span><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-var">disallow</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Wrong username&quot;</span></span><span>
 </span><span id="line-94"></span><span>
 </span><span id="line-95"></span><span class="hs-comment">-- | Log out a user.</span><span>
-</span><span id="line-96"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#logout"><span class="hs-identifier hs-type">logout</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-97"></span><span id="logout"><span class="annot"><span class="annottext">logout :: ActionM ()
+</span><span id="line-96"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#logout"><span class="hs-identifier hs-type">logout</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-97"></span><span id="logout"><span class="annot"><span class="annottext">logout :: Action
 </span><a href="Imageboard.Actions.Auth.html#logout"><span class="hs-identifier hs-var hs-var">logout</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-98"></span><span>    </span><span id="local-6989586621679160675"><span class="annot"><span class="annottext">Maybe SessionKey
-</span><a href="#local-6989586621679160675"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionT Text IO (Maybe SessionKey)
+</span><span id="line-98"></span><span>    </span><span id="local-6989586621679160671"><span class="annot"><span class="annottext">Maybe SessionKey
+</span><a href="#local-6989586621679160671"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionT Text IO (Maybe SessionKey)
 forall (m :: * -&gt; *) e.
 (Monad m, ScottyError e) =&gt;
 SessionKey -&gt; ActionT e m (Maybe SessionKey)
 </span><span class="hs-identifier hs-var">SC.getCookie</span></span><span> </span><span class="annot"><span class="hs-string">&quot;session-token&quot;</span></span><span>
-</span><span id="line-99"></span><span>    </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionM ()
+</span><span id="line-99"></span><span>    </span><span class="annot"><span class="annottext">SessionKey -&gt; Action
 forall (m :: * -&gt; *) e.
 (Monad m, ScottyError e) =&gt;
 SessionKey -&gt; ActionT e m ()
 </span><span class="hs-identifier hs-var">SC.deleteCookie</span></span><span> </span><span class="annot"><span class="hs-string">&quot;session-token&quot;</span></span><span>
 </span><span id="line-100"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Maybe SessionKey
-</span><a href="#local-6989586621679160675"><span class="hs-identifier hs-var">key</span></a></span><span> </span><span class="hs-keyword">of</span><span> </span><span>
-</span><span id="line-101"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM ()
+</span><a href="#local-6989586621679160671"><span class="hs-identifier hs-var">key</span></a></span><span> </span><span class="hs-keyword">of</span><span> </span><span>
+</span><span id="line-101"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Action
 forall a. Text -&gt; ActionM a
 </span><span class="hs-identifier hs-var">S.redirect</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span>
-</span><span id="line-102"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160674"><span class="annot"><span class="annottext">k :: SessionKey
-</span><a href="#local-6989586621679160674"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-103"></span><span>            </span><span class="annot"><span class="annottext">IO () -&gt; ActionM ()
+</span><span id="line-102"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160670"><span class="annot"><span class="annottext">k :: SessionKey
+</span><a href="#local-6989586621679160670"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-103"></span><span>            </span><span class="annot"><span class="annottext">IO () -&gt; Action
 forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
-</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO () -&gt; ActionM ()) -&gt; IO () -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO () -&gt; Action) -&gt; IO () -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; IO ()
 </span><a href="Imageboard.Database.html#removeSessionToken"><span class="hs-identifier hs-var">removeSessionToken</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160674"><span class="hs-identifier hs-var">k</span></a></span><span>
-</span><span id="line-104"></span><span>            </span><span class="annot"><span class="annottext">Text -&gt; ActionM ()
+</span><a href="#local-6989586621679160670"><span class="hs-identifier hs-var">k</span></a></span><span>
+</span><span id="line-104"></span><span>            </span><span class="annot"><span class="annottext">Text -&gt; Action
 forall a. Text -&gt; ActionM a
 </span><span class="hs-identifier hs-var">S.redirect</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span>
 </span><span id="line-105"></span><span>        </span><span>
 </span><span id="line-106"></span><span class="hs-comment">-- | Try to change password of a user.</span><span>
-</span><span id="line-107"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#changePass"><span class="hs-identifier hs-type">changePass</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><span id="line-108"></span><span id="changePass"><span class="annot"><span class="annottext">changePass :: ActionM ()
+</span><span id="line-107"></span><span class="annot"><a href="Imageboard.Actions.Auth.html#changePass"><span class="hs-identifier hs-type">changePass</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Actions.Common.html#Action"><span class="hs-identifier hs-type">Action</span></a></span><span>
+</span><span id="line-108"></span><span id="changePass"><span class="annot"><span class="annottext">changePass :: Action
 </span><a href="Imageboard.Actions.Auth.html#changePass"><span class="hs-identifier hs-var hs-var">changePass</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-109"></span><span>    </span><span id="local-6989586621679160672"><span class="annot"><span class="annottext">Maybe SessionKey
-</span><a href="#local-6989586621679160672"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionT Text IO (Maybe SessionKey)
+</span><span id="line-109"></span><span>    </span><span id="local-6989586621679160668"><span class="annot"><span class="annottext">Maybe SessionKey
+</span><a href="#local-6989586621679160668"><span class="hs-identifier hs-var">key</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionT Text IO (Maybe SessionKey)
 forall (m :: * -&gt; *) e.
 (Monad m, ScottyError e) =&gt;
 SessionKey -&gt; ActionT e m (Maybe SessionKey)
 </span><span class="hs-identifier hs-var">SC.getCookie</span></span><span> </span><span class="annot"><span class="hs-string">&quot;session-token&quot;</span></span><span>
-</span><span id="line-110"></span><span>    </span><span id="local-6989586621679160671"><span class="annot"><span class="annottext">Password
-</span><a href="#local-6989586621679160671"><span class="hs-identifier hs-var">old</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Password
+</span><span id="line-110"></span><span>    </span><span id="local-6989586621679160667"><span class="annot"><span class="annottext">Password
+</span><a href="#local-6989586621679160667"><span class="hs-identifier hs-var">old</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Password
 </span><span class="hs-identifier hs-var">P.mkPassword</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; Password)
 -&gt; ActionM SessionKey -&gt; ActionT Text IO Password
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM SessionKey
 forall a. Parsable a =&gt; Text -&gt; ActionM a
 </span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;old-password&quot;</span></span><span>
-</span><span id="line-111"></span><span>    </span><span id="local-6989586621679160670"><span class="annot"><span class="annottext">Password
-</span><a href="#local-6989586621679160670"><span class="hs-identifier hs-var">new</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Password
+</span><span id="line-111"></span><span>    </span><span id="local-6989586621679160666"><span class="annot"><span class="annottext">Password
+</span><a href="#local-6989586621679160666"><span class="hs-identifier hs-var">new</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Password
 </span><span class="hs-identifier hs-var">P.mkPassword</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; Password)
 -&gt; ActionM SessionKey -&gt; ActionT Text IO Password
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
@@ -418,18 +418,18 @@ forall e (m :: * -&gt; *) a. ExceptT e m a -&gt; m (Either e a)
 -&gt; ActionT Text IO (Either SessionKey ())
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-113"></span><span>        </span><span id="local-6989586621679160669"><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160669"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
+</span><span id="line-113"></span><span>        </span><span id="local-6989586621679160665"><span class="annot"><span class="annottext">SessionKey
+</span><a href="#local-6989586621679160665"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
 -&gt; Maybe SessionKey
 -&gt; ExceptT SessionKey (ActionT Text IO) SessionKey
 forall (m :: * -&gt; *) b a. Monad m =&gt; b -&gt; Maybe a -&gt; ExceptT b m a
-</span><a href="Imageboard.Utils.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Unathorized&quot;</span></span><span> </span><span class="annot"><span class="annottext">Maybe SessionKey
-</span><a href="#local-6989586621679160672"><span class="hs-identifier hs-var">key</span></a></span><span>
-</span><span id="line-114"></span><span>        </span><span id="local-6989586621679160666"><span id="local-6989586621679160667"><span id="local-6989586621679160668"><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier hs-type">AccountInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
+</span><a href="Imageboard.Actions.Common.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Unathorized&quot;</span></span><span> </span><span class="annot"><span class="annottext">Maybe SessionKey
+</span><a href="#local-6989586621679160668"><span class="hs-identifier hs-var">key</span></a></span><span>
+</span><span id="line-114"></span><span>        </span><span id="local-6989586621679160662"><span id="local-6989586621679160663"><span id="local-6989586621679160664"><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier hs-type">AccountInfo</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
 -&gt; Maybe AccountInfo
 -&gt; ExceptT SessionKey (ActionT Text IO) AccountInfo
 forall (m :: * -&gt; *) b a. Monad m =&gt; b -&gt; Maybe a -&gt; ExceptT b m a
-</span><a href="Imageboard.Utils.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Your session token is invalid or expired&quot;</span></span><span>
+</span><a href="Imageboard.Actions.Common.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Your session token is invalid or expired&quot;</span></span><span>
 </span><span id="line-115"></span><span>            </span><span class="annot"><span class="annottext">(Maybe AccountInfo
  -&gt; ExceptT SessionKey (ActionT Text IO) AccountInfo)
 -&gt; ExceptT SessionKey (ActionT Text IO) (Maybe AccountInfo)
@@ -445,13 +445,13 @@ forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; IO (Maybe AccountInfo)
 </span><a href="Imageboard.Database.html#getAccountByToken"><span class="hs-identifier hs-var">getAccountByToken</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160669"><span class="hs-identifier hs-var">k</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-116"></span><span>        </span><span id="local-6989586621679160665"><span class="annot"><span class="annottext">PasswordHash Bcrypt
-</span><a href="#local-6989586621679160665"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
+</span><a href="#local-6989586621679160665"><span class="hs-identifier hs-var">k</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-116"></span><span>        </span><span id="local-6989586621679160661"><span class="annot"><span class="annottext">PasswordHash Bcrypt
+</span><a href="#local-6989586621679160661"><span class="hs-identifier hs-var">h</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">SessionKey
 -&gt; Maybe (PasswordHash Bcrypt)
 -&gt; ExceptT SessionKey (ActionT Text IO) (PasswordHash Bcrypt)
 forall (m :: * -&gt; *) b a. Monad m =&gt; b -&gt; Maybe a -&gt; ExceptT b m a
-</span><a href="Imageboard.Utils.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Wrong username&quot;</span></span><span>
+</span><a href="Imageboard.Actions.Common.html#maybetoExcept"><span class="hs-identifier hs-var">maybetoExcept</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Wrong username&quot;</span></span><span>
 </span><span id="line-117"></span><span>            </span><span class="annot"><span class="annottext">(Maybe (PasswordHash Bcrypt)
  -&gt; ExceptT SessionKey (ActionT Text IO) (PasswordHash Bcrypt))
 -&gt; ExceptT
@@ -471,11 +471,11 @@ forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; IO (Maybe (PasswordHash Bcrypt))
 </span><a href="Imageboard.Database.html#getPasswordHash"><span class="hs-identifier hs-var">getPasswordHash</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160668"><span class="hs-identifier hs-var">user</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679160664"><span class="hs-identifier hs-var">user</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-118"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Password -&gt; PasswordHash Bcrypt -&gt; PasswordCheck
 </span><span class="hs-identifier hs-var">P.checkPassword</span></span><span> </span><span class="annot"><span class="annottext">Password
-</span><a href="#local-6989586621679160671"><span class="hs-identifier hs-var">old</span></a></span><span> </span><span class="annot"><span class="annottext">PasswordHash Bcrypt
-</span><a href="#local-6989586621679160665"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><a href="#local-6989586621679160667"><span class="hs-identifier hs-var">old</span></a></span><span> </span><span class="annot"><span class="annottext">PasswordHash Bcrypt
+</span><a href="#local-6989586621679160661"><span class="hs-identifier hs-var">h</span></a></span><span> </span><span class="hs-keyword">of</span><span>
 </span><span id="line-119"></span><span>            </span><span class="annot"><span class="hs-identifier hs-type">P.PasswordCheckSuccess</span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><span id="line-120"></span><span>                </span><span class="annot"><span class="annottext">Password
 -&gt; ExceptT SessionKey (ActionT Text IO) (PasswordHash Bcrypt)
@@ -483,7 +483,7 @@ forall (m :: * -&gt; *).
 MonadIO m =&gt;
 Password -&gt; m (PasswordHash Bcrypt)
 </span><span class="hs-identifier hs-var">P.hashPassword</span></span><span> </span><span class="annot"><span class="annottext">Password
-</span><a href="#local-6989586621679160670"><span class="hs-identifier hs-var">new</span></a></span><span>
+</span><a href="#local-6989586621679160666"><span class="hs-identifier hs-var">new</span></a></span><span>
 </span><span id="line-121"></span><span>                </span><span class="annot"><span class="annottext">ExceptT SessionKey (ActionT Text IO) (PasswordHash Bcrypt)
 -&gt; (PasswordHash Bcrypt -&gt; ExceptT SessionKey (ActionT Text IO) ())
 -&gt; ExceptT SessionKey (ActionT Text IO) ()
@@ -497,25 +497,25 @@ forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
 forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; PasswordHash Bcrypt -&gt; IO ()
 </span><a href="Imageboard.Database.html#changePassword"><span class="hs-identifier hs-var">changePassword</span></a></span><span> </span><span class="annot"><span class="annottext">SessionKey
-</span><a href="#local-6989586621679160668"><span class="hs-identifier hs-var">user</span></a></span><span>
+</span><a href="#local-6989586621679160664"><span class="hs-identifier hs-var">user</span></a></span><span>
 </span><span id="line-122"></span><span>            </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; ExceptT SessionKey (ActionT Text IO) ()
 forall e (m :: * -&gt; *) a. MonadError e m =&gt; e -&gt; m a
 </span><span class="hs-identifier hs-var">throwError</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Wrong password&quot;</span></span><span>
 </span><span id="line-123"></span><span>    </span><span class="annot"><span class="annottext">ActionT Text IO (Either SessionKey ())
--&gt; (Either SessionKey () -&gt; ActionM ()) -&gt; ActionM ()
+-&gt; (Either SessionKey () -&gt; Action) -&gt; Action
 forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
-</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; ActionM ())
--&gt; (() -&gt; ActionM ()) -&gt; Either SessionKey () -&gt; ActionM ()
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">(SessionKey -&gt; Action)
+-&gt; (() -&gt; Action) -&gt; Either SessionKey () -&gt; Action
 forall a c b. (a -&gt; c) -&gt; (b -&gt; c) -&gt; Either a b -&gt; c
 </span><span class="hs-identifier hs-var">either</span></span><span>
-</span><span id="line-124"></span><span>        </span><span class="annot"><span class="annottext">SessionKey -&gt; ActionM ()
+</span><span id="line-124"></span><span>        </span><span class="annot"><span class="annottext">SessionKey -&gt; Action
 </span><a href="Imageboard.Actions.Auth.html#disallow"><span class="hs-identifier hs-var">disallow</span></a></span><span>
-</span><span id="line-125"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ActionM () -&gt; () -&gt; ActionM ()
+</span><span id="line-125"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Action -&gt; () -&gt; Action
 forall a b. a -&gt; b -&gt; a
-</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; () -&gt; ActionM ()) -&gt; ActionM () -&gt; () -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">(Action -&gt; () -&gt; Action) -&gt; Action -&gt; () -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
-</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Action
+</span><a href="Imageboard.Actions.Common.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Action) -&gt; Html -&gt; Action
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">SessionKey -&gt; Html
 </span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Password succesfully changed.&quot;</span></span><span class="hs-special">)</span><span>
