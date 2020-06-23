@@ -1,0 +1,361 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE OverloadedStrings, RecordWildCards #-}</span><span>
+</span><span id="line-2"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Imageboard.Actions.Admin</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-3"></span><span>    </span><span class="annot"><a href="Imageboard.Actions.Admin.html#modifyBoard"><span class="hs-identifier">modifyBoard</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="Imageboard.Actions.Admin.html#createBoard"><span class="hs-identifier">createBoard</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="Imageboard.Actions.Admin.html#prepareBoardEdit"><span class="hs-identifier">prepareBoardEdit</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="Imageboard.Actions.Admin.html#createAccount"><span class="hs-identifier">createAccount</span></a></span><span>
+</span><span id="line-7"></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.Except</span></span><span>
+</span><span id="line-9"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Password.Bcrypt</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">P</span></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Web.Scotty</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">S</span></span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Network.HTTP.Types.Status</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">created201</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">badRequest400</span></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Pages.html"><span class="hs-identifier">Imageboard.Pages</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier">errorView</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Pages.Account.html#boardModifyPage"><span class="hs-identifier">boardModifyPage</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Utils.html"><span class="hs-identifier">Imageboard.Utils</span></a></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Database.html"><span class="hs-identifier">Imageboard.Database</span></a></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Types.html"><span class="hs-identifier">Imageboard.Types</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Types.html#Role"><span class="hs-identifier">Role</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier">Board</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier">BoardInfo</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#BoardConstraints"><span class="hs-identifier">BoardConstraints</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="annot"><a href="Imageboard.Actions.Admin.html#loadBoardFormThen"><span class="hs-identifier hs-type">loadBoardFormThen</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-type">BoardInfo</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Imageboard.Types.html#BoardConstraints"><span class="hs-identifier hs-type">BoardConstraints</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span id="loadBoardFormThen"><span class="annot"><span class="annottext">loadBoardFormThen :: (BoardInfo -&gt; BoardConstraints -&gt; ActionM ()) -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#loadBoardFormThen"><span class="hs-identifier hs-var hs-var">loadBoardFormThen</span></a></span></span><span> </span><span id="local-6989586621679160867"><span class="annot"><span class="annottext">action :: BoardInfo -&gt; BoardConstraints -&gt; ActionM ()
+</span><a href="#local-6989586621679160867"><span class="hs-identifier hs-var">action</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-19"></span><span>    </span><span id="local-6989586621679160866"><span class="annot"><span class="annottext">Maybe BoardInfo
+</span><a href="#local-6989586621679160866"><span class="hs-identifier hs-var">info</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Board -&gt; Board -&gt; Board -&gt; BoardInfo)
+-&gt; Maybe Board -&gt; Maybe Board -&gt; Maybe Board -&gt; Maybe BoardInfo
+forall (m :: * -&gt; *) a1 a2 a3 r.
+Monad m =&gt;
+(a1 -&gt; a2 -&gt; a3 -&gt; r) -&gt; m a1 -&gt; m a2 -&gt; m a3 -&gt; m r
+</span><span class="hs-identifier hs-var">liftM3</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Board -&gt; Board -&gt; BoardInfo
+</span><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-var">BoardInfo</span></a></span><span class="hs-special">)</span><span>   </span><span class="annot"><span class="annottext">(Maybe Board -&gt; Maybe Board -&gt; Maybe Board -&gt; Maybe BoardInfo)
+-&gt; ActionT Text IO (Maybe Board)
+-&gt; ActionT Text IO (Maybe Board -&gt; Maybe Board -&gt; Maybe BoardInfo)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Board)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;name&quot;</span></span><span>   </span><span>
+</span><span id="line-20"></span><span>                        </span><span class="annot"><span class="annottext">ActionT Text IO (Maybe Board -&gt; Maybe Board -&gt; Maybe BoardInfo)
+-&gt; ActionT Text IO (Maybe Board)
+-&gt; ActionT Text IO (Maybe Board -&gt; Maybe BoardInfo)
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Board)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;title&quot;</span></span><span>
+</span><span id="line-21"></span><span>                        </span><span class="annot"><span class="annottext">ActionT Text IO (Maybe Board -&gt; Maybe BoardInfo)
+-&gt; ActionT Text IO (Maybe Board)
+-&gt; ActionT Text IO (Maybe BoardInfo)
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Board)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;subtitle&quot;</span></span><span>
+</span><span id="line-22"></span><span>    </span><span id="local-6989586621679160861"><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679160861"><span class="hs-identifier hs-var">l</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Bool
+</span><a href="Imageboard.Utils.html#checkBoxParam"><span class="hs-identifier hs-var">checkBoxParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;locked&quot;</span></span><span>
+</span><span id="line-23"></span><span>    </span><span id="local-6989586621679160859"><span class="annot"><span class="annottext">Maybe BoardConstraints
+</span><a href="#local-6989586621679160859"><span class="hs-identifier hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Int -&gt; Int -&gt; Int -&gt; Int -&gt; Int -&gt; BoardConstraints)
+-&gt; Maybe Int
+-&gt; Maybe Int
+-&gt; Maybe Int
+-&gt; Maybe Int
+-&gt; Maybe Int
+-&gt; Maybe BoardConstraints
+forall (m :: * -&gt; *) a1 a2 a3 a4 a5 r.
+Monad m =&gt;
+(a1 -&gt; a2 -&gt; a3 -&gt; a4 -&gt; a5 -&gt; r)
+-&gt; m a1 -&gt; m a2 -&gt; m a3 -&gt; m a4 -&gt; m a5 -&gt; m r
+</span><span class="hs-identifier hs-var">liftM5</span></span><span> </span><span class="annot"><span class="annottext">((Int -&gt; Int -&gt; Int -&gt; Int -&gt; Int -&gt; BoardConstraints)
+ -&gt; Maybe Int
+ -&gt; Maybe Int
+ -&gt; Maybe Int
+ -&gt; Maybe Int
+ -&gt; Maybe Int
+ -&gt; Maybe BoardConstraints)
+-&gt; (Int -&gt; Int -&gt; Int -&gt; Int -&gt; Int -&gt; BoardConstraints)
+-&gt; Maybe Int
+-&gt; Maybe Int
+-&gt; Maybe Int
+-&gt; Maybe Int
+-&gt; Maybe Int
+-&gt; Maybe BoardConstraints
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Int -&gt; Int -&gt; Int -&gt; Int -&gt; Int -&gt; BoardConstraints
+</span><a href="Imageboard.Types.html#Constraints"><span class="hs-identifier hs-var">Constraints</span></a></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679160861"><span class="hs-identifier hs-var">l</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Maybe Int
+ -&gt; Maybe Int
+ -&gt; Maybe Int
+ -&gt; Maybe Int
+ -&gt; Maybe Int
+ -&gt; Maybe BoardConstraints)
+-&gt; ActionT Text IO (Maybe Int)
+-&gt; ActionT
+     Text
+     IO
+     (Maybe Int
+      -&gt; Maybe Int -&gt; Maybe Int -&gt; Maybe Int -&gt; Maybe BoardConstraints)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Int)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;minlen&quot;</span></span><span>
+</span><span id="line-24"></span><span>                        </span><span class="annot"><span class="annottext">ActionT
+  Text
+  IO
+  (Maybe Int
+   -&gt; Maybe Int -&gt; Maybe Int -&gt; Maybe Int -&gt; Maybe BoardConstraints)
+-&gt; ActionT Text IO (Maybe Int)
+-&gt; ActionT
+     Text
+     IO
+     (Maybe Int -&gt; Maybe Int -&gt; Maybe Int -&gt; Maybe BoardConstraints)
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Int)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;maxlen&quot;</span></span><span>
+</span><span id="line-25"></span><span>                        </span><span class="annot"><span class="annottext">ActionT
+  Text
+  IO
+  (Maybe Int -&gt; Maybe Int -&gt; Maybe Int -&gt; Maybe BoardConstraints)
+-&gt; ActionT Text IO (Maybe Int)
+-&gt; ActionT
+     Text IO (Maybe Int -&gt; Maybe Int -&gt; Maybe BoardConstraints)
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Int)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;maxnewlines&quot;</span></span><span>
+</span><span id="line-26"></span><span>                        </span><span class="annot"><span class="annottext">ActionT Text IO (Maybe Int -&gt; Maybe Int -&gt; Maybe BoardConstraints)
+-&gt; ActionT Text IO (Maybe Int)
+-&gt; ActionT Text IO (Maybe Int -&gt; Maybe BoardConstraints)
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Int)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;maxreplies&quot;</span></span><span>
+</span><span id="line-27"></span><span>                        </span><span class="annot"><span class="annottext">ActionT Text IO (Maybe Int -&gt; Maybe BoardConstraints)
+-&gt; ActionT Text IO (Maybe Int)
+-&gt; ActionT Text IO (Maybe BoardConstraints)
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Int)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;maxthreads&quot;</span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Maybe BoardInfo
+</span><a href="#local-6989586621679160866"><span class="hs-identifier hs-var">info</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Maybe BoardConstraints
+</span><a href="#local-6989586621679160859"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-29"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160856"><span class="annot"><span class="annottext">i :: BoardInfo
+</span><a href="#local-6989586621679160856"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160855"><span class="annot"><span class="annottext">c :: BoardConstraints
+</span><a href="#local-6989586621679160855"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">BoardInfo -&gt; BoardConstraints -&gt; ActionM ()
+</span><a href="#local-6989586621679160867"><span class="hs-identifier hs-var">action</span></a></span><span> </span><span class="annot"><span class="annottext">BoardInfo
+</span><a href="#local-6989586621679160856"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">BoardConstraints
+</span><a href="#local-6989586621679160855"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span>  </span><span class="hs-keyword">do</span><span>
+</span><span id="line-31"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Html
+</span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Insufficient params&quot;</span></span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="annot"><a href="Imageboard.Actions.Admin.html#modifyBoard"><span class="hs-identifier hs-type">modifyBoard</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-34"></span><span id="modifyBoard"><span class="annot"><span class="annottext">modifyBoard :: ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#modifyBoard"><span class="hs-identifier hs-var hs-var">modifyBoard</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-35"></span><span>    </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Board)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span>
+</span><span id="line-36"></span><span>    </span><span class="annot"><span class="annottext">ActionT Text IO (Maybe Board)
+-&gt; (Maybe Board -&gt; ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; (Board -&gt; ActionM ()) -&gt; Maybe Board -&gt; ActionM ()
+forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
+</span><span class="hs-identifier hs-var">maybe</span></span><span> </span><span>
+</span><span id="line-37"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Html
+</span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;No board to modify&quot;</span></span><span class="hs-special">)</span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679160852"><span class="annot"><span class="annottext">b :: Board
+</span><a href="#local-6989586621679160852"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">(BoardInfo -&gt; BoardConstraints -&gt; ActionM ()) -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#loadBoardFormThen"><span class="hs-identifier hs-var">loadBoardFormThen</span></a></span><span> </span><span class="annot"><span class="annottext">((BoardInfo -&gt; BoardConstraints -&gt; ActionM ()) -&gt; ActionM ())
+-&gt; (BoardInfo -&gt; BoardConstraints -&gt; ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679160851"><span class="annot"><span class="annottext">bi :: BoardInfo
+</span><a href="#local-6989586621679160851"><span class="hs-identifier hs-var">bi</span></a></span></span><span> </span><span id="local-6989586621679160850"><span class="annot"><span class="annottext">bc :: BoardConstraints
+</span><a href="#local-6989586621679160850"><span class="hs-identifier hs-var">bc</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-39"></span><span>            </span><span class="annot"><span class="annottext">IO () -&gt; ActionM ()
+forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO () -&gt; ActionM ()) -&gt; IO () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; BoardInfo -&gt; BoardConstraints -&gt; IO ()
+</span><a href="Imageboard.Database.html#updateBoard"><span class="hs-identifier hs-var">updateBoard</span></a></span><span> </span><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679160852"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">BoardInfo
+</span><a href="#local-6989586621679160851"><span class="hs-identifier hs-var">bi</span></a></span><span> </span><span class="annot"><span class="annottext">BoardConstraints
+</span><a href="#local-6989586621679160850"><span class="hs-identifier hs-var">bc</span></a></span><span>
+</span><span id="line-40"></span><span>            </span><span class="annot"><span class="annottext">Text -&gt; ActionM ()
+forall a. Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.redirect</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/mod&quot;</span></span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-special">)</span><span>
+</span><span id="line-42"></span><span>        </span><span>
+</span><span id="line-43"></span><span class="annot"><a href="Imageboard.Actions.Admin.html#createBoard"><span class="hs-identifier hs-type">createBoard</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-44"></span><span id="createBoard"><span class="annot"><span class="annottext">createBoard :: ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#createBoard"><span class="hs-identifier hs-var hs-var">createBoard</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-45"></span><span>    </span><span class="annot"><span class="annottext">(BoardInfo -&gt; BoardConstraints -&gt; ActionM ()) -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#loadBoardFormThen"><span class="hs-identifier hs-var">loadBoardFormThen</span></a></span><span> </span><span class="annot"><span class="annottext">((BoardInfo -&gt; BoardConstraints -&gt; ActionM ()) -&gt; ActionM ())
+-&gt; (BoardInfo -&gt; BoardConstraints -&gt; ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679160846"><span class="annot"><span class="annottext">bi :: BoardInfo
+</span><a href="#local-6989586621679160846"><span class="hs-identifier hs-var">bi</span></a></span></span><span> </span><span id="local-6989586621679160845"><span class="annot"><span class="annottext">bc :: BoardConstraints
+</span><a href="#local-6989586621679160845"><span class="hs-identifier hs-var">bc</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-46"></span><span>        </span><span class="annot"><span class="annottext">IO () -&gt; ActionM ()
+forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO () -&gt; ActionM ()) -&gt; IO () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">BoardInfo -&gt; BoardConstraints -&gt; IO ()
+</span><a href="Imageboard.Database.html#insertBoard"><span class="hs-identifier hs-var">insertBoard</span></a></span><span> </span><span class="annot"><span class="annottext">BoardInfo
+</span><a href="#local-6989586621679160846"><span class="hs-identifier hs-var">bi</span></a></span><span> </span><span class="annot"><span class="annottext">BoardConstraints
+</span><a href="#local-6989586621679160845"><span class="hs-identifier hs-var">bc</span></a></span><span>
+</span><span id="line-47"></span><span>        </span><span class="annot"><span class="annottext">Status -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">S.status</span></span><span> </span><span class="annot"><span class="annottext">Status
+</span><span class="hs-identifier hs-var">created201</span></span><span>
+</span><span id="line-48"></span><span>        </span><span class="annot"><span class="annottext">Text -&gt; ActionM ()
+forall a. Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.redirect</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/mod&quot;</span></span><span>
+</span><span id="line-49"></span><span>
+</span><span id="line-50"></span><span class="hs-comment">-- | Send form for modyfing existing board. </span><span>
+</span><span id="line-51"></span><span class="annot"><a href="Imageboard.Actions.Admin.html#prepareBoardEdit"><span class="hs-identifier hs-type">prepareBoardEdit</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-52"></span><span id="prepareBoardEdit"><span class="annot"><span class="annottext">prepareBoardEdit :: Board -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#prepareBoardEdit"><span class="hs-identifier hs-var hs-var">prepareBoardEdit</span></a></span></span><span> </span><span id="local-6989586621679160842"><span class="annot"><span class="annottext">b :: Board
+</span><a href="#local-6989586621679160842"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-53"></span><span>    </span><span id="local-6989586621679160841"><span class="annot"><span class="annottext">Maybe BoardInfo
+</span><a href="#local-6989586621679160841"><span class="hs-identifier hs-var">info</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO (Maybe BoardInfo) -&gt; ActionT Text IO (Maybe BoardInfo)
+forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO (Maybe BoardInfo) -&gt; ActionT Text IO (Maybe BoardInfo))
+-&gt; IO (Maybe BoardInfo) -&gt; ActionT Text IO (Maybe BoardInfo)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; IO (Maybe BoardInfo)
+</span><a href="Imageboard.Database.html#getBoardInfo"><span class="hs-identifier hs-var">getBoardInfo</span></a></span><span> </span><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679160842"><span class="hs-identifier hs-var">b</span></a></span><span>
+</span><span id="line-54"></span><span>    </span><span id="local-6989586621679160839"><span class="annot"><span class="annottext">Maybe BoardConstraints
+</span><a href="#local-6989586621679160839"><span class="hs-identifier hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO (Maybe BoardConstraints)
+-&gt; ActionT Text IO (Maybe BoardConstraints)
+forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO (Maybe BoardConstraints)
+ -&gt; ActionT Text IO (Maybe BoardConstraints))
+-&gt; IO (Maybe BoardConstraints)
+-&gt; ActionT Text IO (Maybe BoardConstraints)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; IO (Maybe BoardConstraints)
+</span><a href="Imageboard.Database.html#getConstraints"><span class="hs-identifier hs-var">getConstraints</span></a></span><span> </span><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679160842"><span class="hs-identifier hs-var">b</span></a></span><span>
+</span><span id="line-55"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Maybe BoardInfo
+</span><a href="#local-6989586621679160841"><span class="hs-identifier hs-var">info</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">Maybe BoardConstraints
+</span><a href="#local-6989586621679160839"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-56"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160837"><span class="annot"><span class="annottext">i :: BoardInfo
+</span><a href="#local-6989586621679160837"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679160836"><span class="annot"><span class="annottext">c :: BoardConstraints
+</span><a href="#local-6989586621679160836"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">BoardInfo -&gt; BoardConstraints -&gt; Html
+</span><a href="Imageboard.Pages.Account.html#boardModifyPage"><span class="hs-identifier hs-var">boardModifyPage</span></a></span><span> </span><span class="annot"><span class="annottext">BoardInfo
+</span><a href="#local-6989586621679160837"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">BoardConstraints
+</span><a href="#local-6989586621679160836"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-57"></span><span>        </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-58"></span><span>            </span><span class="annot"><span class="annottext">Status -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">S.status</span></span><span> </span><span class="annot"><span class="annottext">Status
+</span><span class="hs-identifier hs-var">badRequest400</span></span><span>
+</span><span id="line-59"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Html
+</span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Board does not exist&quot;</span></span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span class="annot"><a href="Imageboard.Actions.Admin.html#createAccount"><span class="hs-identifier hs-type">createAccount</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-62"></span><span id="createAccount"><span class="annot"><span class="annottext">createAccount :: ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#createAccount"><span class="hs-identifier hs-var hs-var">createAccount</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-63"></span><span>    </span><span id="local-6989586621679160835"><span class="annot"><span class="annottext">Password
+</span><a href="#local-6989586621679160835"><span class="hs-identifier hs-var">pass</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Board -&gt; Password
+</span><span class="hs-identifier hs-var">P.mkPassword</span></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Password)
+-&gt; ActionT Text IO Board -&gt; ActionT Text IO Password
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;password&quot;</span></span><span>
+</span><span id="line-64"></span><span>    </span><span id="local-6989586621679160832"><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679160832"><span class="hs-identifier hs-var">user</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;username&quot;</span></span><span>
+</span><span id="line-65"></span><span>    </span><span class="annot"><span class="annottext">ExceptT Board (ActionT Text IO) ()
+-&gt; ActionT Text IO (Either Board ())
+forall e (m :: * -&gt; *) a. ExceptT e m a -&gt; m (Either e a)
+</span><span class="hs-identifier hs-var">runExceptT</span></span><span> </span><span class="annot"><span class="annottext">(ExceptT Board (ActionT Text IO) ()
+ -&gt; ActionT Text IO (Either Board ()))
+-&gt; ExceptT Board (ActionT Text IO) ()
+-&gt; ActionT Text IO (Either Board ())
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-66"></span><span>        </span><span id="local-6989586621679160830"><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679160830"><span class="hs-identifier hs-var">exists</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO Bool -&gt; ExceptT Board (ActionT Text IO) Bool
+forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO Bool -&gt; ExceptT Board (ActionT Text IO) Bool)
+-&gt; IO Bool -&gt; ExceptT Board (ActionT Text IO) Bool
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; IO Bool
+</span><a href="Imageboard.Database.html#checkAccount"><span class="hs-identifier hs-var">checkAccount</span></a></span><span> </span><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679160832"><span class="hs-identifier hs-var">user</span></a></span><span>
+</span><span id="line-67"></span><span>        </span><span class="annot"><span class="annottext">Bool
+-&gt; ExceptT Board (ActionT Text IO) ()
+-&gt; ExceptT Board (ActionT Text IO) ()
+forall (f :: * -&gt; *). Applicative f =&gt; Bool -&gt; f () -&gt; f ()
+</span><span class="hs-identifier hs-var">when</span></span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679160830"><span class="hs-identifier hs-var">exists</span></a></span><span> </span><span class="annot"><span class="annottext">(ExceptT Board (ActionT Text IO) ()
+ -&gt; ExceptT Board (ActionT Text IO) ())
+-&gt; ExceptT Board (ActionT Text IO) ()
+-&gt; ExceptT Board (ActionT Text IO) ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; ExceptT Board (ActionT Text IO) ()
+forall e (m :: * -&gt; *) a. MonadError e m =&gt; e -&gt; m a
+</span><span class="hs-identifier hs-var">throwError</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Account with this username already exists&quot;</span></span><span>
+</span><span id="line-68"></span><span>        </span><span id="local-6989586621679160826"><span class="annot"><span class="annottext">PasswordHash Bcrypt
+</span><a href="#local-6989586621679160826"><span class="hs-identifier hs-var">hash</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">IO (PasswordHash Bcrypt)
+-&gt; ExceptT Board (ActionT Text IO) (PasswordHash Bcrypt)
+forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO (PasswordHash Bcrypt)
+ -&gt; ExceptT Board (ActionT Text IO) (PasswordHash Bcrypt))
+-&gt; IO (PasswordHash Bcrypt)
+-&gt; ExceptT Board (ActionT Text IO) (PasswordHash Bcrypt)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Password -&gt; IO (PasswordHash Bcrypt)
+forall (m :: * -&gt; *).
+MonadIO m =&gt;
+Password -&gt; m (PasswordHash Bcrypt)
+</span><span class="hs-identifier hs-var">P.hashPassword</span></span><span> </span><span class="annot"><span class="annottext">Password
+</span><a href="#local-6989586621679160835"><span class="hs-identifier hs-var">pass</span></a></span><span>
+</span><span id="line-69"></span><span>        </span><span class="annot"><span class="annottext">IO () -&gt; ExceptT Board (ActionT Text IO) ()
+forall (m :: * -&gt; *) a. MonadIO m =&gt; IO a -&gt; m a
+</span><span class="hs-identifier hs-var">liftIO</span></span><span> </span><span class="annot"><span class="annottext">(IO () -&gt; ExceptT Board (ActionT Text IO) ())
+-&gt; IO () -&gt; ExceptT Board (ActionT Text IO) ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; PasswordHash Bcrypt -&gt; Role -&gt; IO ()
+</span><a href="Imageboard.Database.html#insertAccount"><span class="hs-identifier hs-var">insertAccount</span></a></span><span> </span><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679160832"><span class="hs-identifier hs-var">user</span></a></span><span> </span><span class="annot"><span class="annottext">PasswordHash Bcrypt
+</span><a href="#local-6989586621679160826"><span class="hs-identifier hs-var">hash</span></a></span><span> </span><span class="annot"><span class="annottext">Role
+</span><a href="Imageboard.Types.html#Moderator"><span class="hs-identifier hs-var">Moderator</span></a></span><span>
+</span><span id="line-70"></span><span>    </span><span class="annot"><span class="annottext">ActionT Text IO (Either Board ())
+-&gt; (Either Board () -&gt; ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; ActionM ())
+-&gt; (() -&gt; ActionM ()) -&gt; Either Board () -&gt; ActionM ()
+forall a c b. (a -&gt; c) -&gt; (b -&gt; c) -&gt; Either a b -&gt; c
+</span><span class="hs-identifier hs-var">either</span></span><span>
+</span><span id="line-71"></span><span>        </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679160821"><span class="annot"><span class="annottext">msg :: Board
+</span><a href="#local-6989586621679160821"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-72"></span><span>            </span><span class="annot"><span class="annottext">Status -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">S.status</span></span><span> </span><span class="annot"><span class="annottext">Status
+</span><span class="hs-identifier hs-var">badRequest400</span></span><span>
+</span><span id="line-73"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Html
+</span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="annottext">Board
+</span><a href="#local-6989586621679160821"><span class="hs-identifier hs-var">msg</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-74"></span><span>        </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-75"></span><span>            </span><span class="annot"><span class="annottext">Status -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">S.status</span></span><span> </span><span class="annot"><span class="annottext">Status
+</span><span class="hs-identifier hs-var">created201</span></span><span>
+</span><span id="line-76"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Html
+</span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;Account succesfully created&quot;</span></span><span class="hs-special">)</span></pre></body></html>

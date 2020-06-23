@@ -1,0 +1,752 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE OverloadedStrings, RecordWildCards #-}</span><span>
+</span><span id="line-2"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Imageboard.Pages.Common</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-3"></span><span>    </span><span class="annot"><a href="Imageboard.Pages.Common.html#renderFlags"><span class="hs-identifier">renderFlags</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="Imageboard.Pages.Common.html#space"><span class="hs-identifier">space</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="Imageboard.Pages.Common.html#commonHtml"><span class="hs-identifier">commonHtml</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="Imageboard.Pages.Common.html#addTopBottom"><span class="hs-identifier">addTopBottom</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="Imageboard.Pages.Common.html#threadForm"><span class="hs-identifier">threadForm</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="Imageboard.Pages.Common.html#replyForm"><span class="hs-identifier">replyForm</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="Imageboard.Pages.Common.html#fileThumbLink"><span class="hs-identifier">fileThumbLink</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="Imageboard.Pages.Common.html#formatDate"><span class="hs-identifier">formatDate</span></a></span><span>
+</span><span id="line-11"></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">T</span></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Blaze.Html5</span></span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-glyph">!</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Text.Blaze.Html5</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">H</span></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Text.Blaze.Html5.Attributes</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">A</span></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Time</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">formatTime</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">UTCTime</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">defaultTimeLocale</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">utcToLocalTime</span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Types.html"><span class="hs-identifier">Imageboard.Types</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Types.html#ThreadFlags"><span class="hs-identifier">ThreadFlags</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#File"><span class="hs-identifier">File</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#isImage"><span class="hs-identifier">isImage</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier">Board</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="Imageboard.Config.html"><span class="hs-identifier">Imageboard.Config</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Config</span></span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- | Format date to YYYY-MM-DD HH:MM:SS.</span><span>
+</span><span id="line-22"></span><span class="annot"><a href="Imageboard.Pages.Common.html#formatDate"><span class="hs-identifier hs-type">formatDate</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-23"></span><span id="formatDate"><span class="annot"><span class="annottext">formatDate :: UTCTime -&gt; String
+</span><a href="Imageboard.Pages.Common.html#formatDate"><span class="hs-identifier hs-var hs-var">formatDate</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">TimeLocale -&gt; String -&gt; LocalTime -&gt; String
+forall t. FormatTime t =&gt; TimeLocale -&gt; String -&gt; t -&gt; String
+</span><span class="hs-identifier hs-var">formatTime</span></span><span> </span><span class="annot"><span class="annottext">TimeLocale
+</span><span class="hs-identifier hs-var">defaultTimeLocale</span></span><span> </span><span class="annot"><span class="hs-string">&quot;%F %T&quot;</span></span><span> </span><span class="annot"><span class="annottext">(LocalTime -&gt; String)
+-&gt; (UTCTime -&gt; LocalTime) -&gt; UTCTime -&gt; String
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">TimeZone -&gt; UTCTime -&gt; LocalTime
+</span><span class="hs-identifier hs-var">utcToLocalTime</span></span><span> </span><span class="annot"><span class="annottext">TimeZone
+</span><a href="Imageboard.Config.html#timezone"><span class="hs-identifier hs-var">Config.timezone</span></a></span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- | Render flags that apply to a thread.</span><span>
+</span><span id="line-26"></span><span class="annot"><a href="Imageboard.Pages.Common.html#renderFlags"><span class="hs-identifier hs-type">renderFlags</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#ThreadFlags"><span class="hs-identifier hs-type">ThreadFlags</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
+</span><span id="line-27"></span><span id="renderFlags"><span class="annot"><span class="annottext">renderFlags :: ThreadFlags -&gt; Html
+</span><a href="Imageboard.Pages.Common.html#renderFlags"><span class="hs-identifier hs-var hs-var">renderFlags</span></a></span></span><span> </span><span id="local-6989586621679158893"><span id="local-6989586621679158894"><span id="local-6989586621679158895"><span id="local-6989586621679158896"><span class="annot"><a href="Imageboard.Types.html#Flags"><span class="hs-identifier hs-type">Flags</span></a></span><span class="hs-special">{</span><span class="hs-glyph">..</span><span class="hs-special">}</span></span></span></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Html] -&gt; Html
+forall a. Monoid a =&gt; [a] -&gt; a
+</span><span class="hs-identifier hs-var">mconcat</span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">[</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679158896"><span class="hs-identifier hs-var">sticky</span></a></span><span>   </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.span</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.title</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Sticky&quot;</span></span><span>    </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;sticky-icon&quot;</span></span><span>   </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;(S)&quot;</span></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Html
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679158895"><span class="hs-identifier hs-var">lock</span></a></span><span>     </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.span</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.title</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Locked&quot;</span></span><span>    </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;lock-icon&quot;</span></span><span>     </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;(L)&quot;</span></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Html
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679158894"><span class="hs-identifier hs-var">autosage</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.span</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.title</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Autosage&quot;</span></span><span>  </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;autosage-icon&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;(A)&quot;</span></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Html
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679158893"><span class="hs-identifier hs-var">cycle_</span></a></span><span>   </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.span</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.title</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Cycle&quot;</span></span><span>     </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;cycle-icon&quot;</span></span><span>    </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;(C)&quot;</span></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">Html
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span class="hs-special">]</span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-comment">-- | A space character.</span><span>
+</span><span id="line-34"></span><span class="annot"><a href="Imageboard.Pages.Common.html#space"><span class="hs-identifier hs-type">space</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span> </span><span>
+</span><span id="line-35"></span><span id="space"><span class="annot"><span class="annottext">space :: Html
+</span><a href="Imageboard.Pages.Common.html#space"><span class="hs-identifier hs-var hs-var">space</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;\n&quot;</span></span><span>
+</span><span id="line-36"></span><span>
+</span><span id="line-37"></span><span class="annot"><a href="Imageboard.Pages.Common.html#fileThumbLink"><span class="hs-identifier hs-type">fileThumbLink</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#File"><span class="hs-identifier hs-type">File</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-38"></span><span id="fileThumbLink"><span class="annot"><span class="annottext">fileThumbLink :: File -&gt; Text
+</span><a href="Imageboard.Pages.Common.html#fileThumbLink"><span class="hs-identifier hs-var hs-var">fileThumbLink</span></a></span></span><span> </span><span id="local-6989586621679158884"><span class="annot"><span class="annottext">f :: File
+</span><a href="#local-6989586621679158884"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[Text] -&gt; Text
+forall a. Monoid a =&gt; [a] -&gt; a
+</span><span class="hs-identifier hs-var">mconcat</span></span><span> </span><span class="hs-special">[</span><span class="annot"><span class="hs-string">&quot;/media/thumb/&quot;</span></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">FileType -&gt; Bool
+</span><a href="Imageboard.Types.html#isImage"><span class="hs-identifier hs-var">isImage</span></a></span><span> </span><span class="annot"><span class="annottext">(FileType -&gt; Bool) -&gt; FileType -&gt; Bool
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">File -&gt; FileType
+</span><a href="Imageboard.Types.html#ext"><span class="hs-identifier hs-var hs-var">ext</span></a></span><span> </span><span class="annot"><span class="annottext">File
+</span><a href="#local-6989586621679158884"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">File -&gt; Text
+</span><a href="Imageboard.Types.html#filename"><span class="hs-identifier hs-var hs-var">filename</span></a></span><span> </span><span class="annot"><span class="annottext">File
+</span><a href="#local-6989586621679158884"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">File -&gt; Text
+</span><a href="Imageboard.Types.html#filename"><span class="hs-identifier hs-var hs-var">filename</span></a></span><span> </span><span class="annot"><span class="annottext">File
+</span><a href="#local-6989586621679158884"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; Text
+</span><span class="hs-operator hs-var">`T.append`</span></span><span> </span><span class="annot"><span class="hs-string">&quot;.jpg&quot;</span></span><span class="hs-special">]</span><span>
+</span><span id="line-40"></span><span>
+</span><span id="line-41"></span><span class="hs-comment">-- | Render HTML with title and navbar that includes list of boards.</span><span>
+</span><span id="line-42"></span><span class="annot"><a href="Imageboard.Pages.Common.html#commonHtml"><span class="hs-identifier hs-type">commonHtml</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ Title</span><span>
+</span><span id="line-43"></span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-comment">-- ^ List of boards</span><span>
+</span><span id="line-44"></span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span> </span><span class="hs-comment">-- ^ Inner HTML</span><span>
+</span><span id="line-45"></span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
+</span><span id="line-46"></span><span id="commonHtml"><span class="annot"><span class="annottext">commonHtml :: Text -&gt; [Text] -&gt; Html -&gt; Html
+</span><a href="Imageboard.Pages.Common.html#commonHtml"><span class="hs-identifier hs-var hs-var">commonHtml</span></a></span></span><span> </span><span id="local-6989586621679158880"><span class="annot"><span class="annottext">pageTitle :: Text
+</span><a href="#local-6989586621679158880"><span class="hs-identifier hs-var">pageTitle</span></a></span></span><span> </span><span id="local-6989586621679158879"><span class="annot"><span class="annottext">bs :: [Text]
+</span><a href="#local-6989586621679158879"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span id="local-6989586621679158878"><span class="annot"><span class="annottext">c :: Html
+</span><a href="#local-6989586621679158878"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.docTypeHtml</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-47"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.head</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-48"></span><span>        </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.meta</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.charset</span></span><span> </span><span class="annot"><span class="hs-string">&quot;UTF-8&quot;</span></span><span>
+</span><span id="line-49"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.title</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Html
+</span><span class="hs-identifier hs-var">H.text</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679158880"><span class="hs-identifier hs-var">pageTitle</span></a></span><span>
+</span><span id="line-50"></span><span>        </span><span class="hs-keyword">let</span><span> </span><span id="local-6989586621679158871"><span class="annot"><span class="annottext">stylesheet :: Html
+</span><a href="#local-6989586621679158871"><span class="hs-identifier hs-var hs-var">stylesheet</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.link</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.type_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;text/css&quot;</span></span><span>
+</span><span id="line-51"></span><span>        </span><span class="annot"><span class="annottext">Html
+</span><a href="#local-6989586621679158871"><span class="hs-identifier hs-var">stylesheet</span></a></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.rel</span></span><span> </span><span class="annot"><span class="hs-string">&quot;stylesheet&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue
+forall a. IsString a =&gt; a
+</span><a href="Imageboard.Config.html#cssFile"><span class="hs-identifier hs-var">Config.cssFile</span></a></span><span>
+</span><span id="line-52"></span><span>        </span><span class="annot"><span class="annottext">((AttributeValue, AttributeValue) -&gt; Html)
+-&gt; [(AttributeValue, AttributeValue)] -&gt; Html
+forall (t :: * -&gt; *) m a.
+(Foldable t, Monoid m) =&gt;
+(a -&gt; m) -&gt; t a -&gt; m
+</span><span class="hs-identifier hs-var">foldMap</span></span><span> </span><span>
+</span><span id="line-53"></span><span>            </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679158864"><span class="annot"><span class="annottext">l :: AttributeValue
+</span><a href="#local-6989586621679158864"><span class="hs-identifier hs-var">l</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679158863"><span class="annot"><span class="annottext">t :: AttributeValue
+</span><a href="#local-6989586621679158863"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Html
+</span><a href="#local-6989586621679158871"><span class="hs-identifier hs-var">stylesheet</span></a></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.rel</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;stylesheet&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue
+</span><a href="#local-6989586621679158864"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.title</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue
+</span><a href="#local-6989586621679158863"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span>
+</span><span id="line-54"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+-&gt; [(AttributeValue, AttributeValue)]
+-&gt; [(AttributeValue, AttributeValue)]
+forall a. Int -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">take</span></span><span> </span><span class="annot"><span class="hs-number">1</span></span><span> </span><span class="annot"><span class="annottext">[(AttributeValue, AttributeValue)]
+forall a. IsString a =&gt; [(a, a)]
+</span><a href="Imageboard.Config.html#cssStyles"><span class="hs-identifier hs-var">Config.cssStyles</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-55"></span><span>        </span><span class="annot"><span class="annottext">((AttributeValue, AttributeValue) -&gt; Html)
+-&gt; [(AttributeValue, AttributeValue)] -&gt; Html
+forall (t :: * -&gt; *) m a.
+(Foldable t, Monoid m) =&gt;
+(a -&gt; m) -&gt; t a -&gt; m
+</span><span class="hs-identifier hs-var">foldMap</span></span><span> </span><span>
+</span><span id="line-56"></span><span>            </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span class="hs-special">(</span><span id="local-6989586621679158860"><span class="annot"><span class="annottext">l :: AttributeValue
+</span><a href="#local-6989586621679158860"><span class="hs-identifier hs-var">l</span></a></span></span><span class="hs-special">,</span><span id="local-6989586621679158859"><span class="annot"><span class="annottext">t :: AttributeValue
+</span><a href="#local-6989586621679158859"><span class="hs-identifier hs-var">t</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Html
+</span><a href="#local-6989586621679158871"><span class="hs-identifier hs-var">stylesheet</span></a></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.rel</span></span><span> </span><span class="annot"><span class="hs-string">&quot;alternate stylesheet&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue
+</span><a href="#local-6989586621679158860"><span class="hs-identifier hs-var">l</span></a></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.title</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue
+</span><a href="#local-6989586621679158859"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span>
+</span><span id="line-57"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Int
+-&gt; [(AttributeValue, AttributeValue)]
+-&gt; [(AttributeValue, AttributeValue)]
+forall a. Int -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">drop</span></span><span> </span><span class="annot"><span class="hs-number">1</span></span><span> </span><span class="annot"><span class="annottext">[(AttributeValue, AttributeValue)]
+forall a. IsString a =&gt; [(a, a)]
+</span><a href="Imageboard.Config.html#cssStyles"><span class="hs-identifier hs-var">Config.cssStyles</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-58"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.body</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-59"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.a</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;top-of-page&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-60"></span><span>        </span><span class="annot"><span class="annottext">[Text] -&gt; Html
+</span><a href="Imageboard.Pages.Common.html#navBar"><span class="hs-identifier hs-var">navBar</span></a></span><span> </span><span class="annot"><span class="annottext">[Text]
+</span><a href="#local-6989586621679158879"><span class="hs-identifier hs-var">bs</span></a></span><span>
+</span><span id="line-61"></span><span>        </span><span class="annot"><span class="annottext">Html
+</span><a href="#local-6989586621679158878"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-62"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.a</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;bottom-of-page&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span><span class="annot"><a href="Imageboard.Pages.Common.html#navBar"><span class="hs-identifier hs-type">navBar</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
+</span><span id="line-65"></span><span id="navBar"><span class="annot"><span class="annottext">navBar :: [Text] -&gt; Html
+</span><a href="Imageboard.Pages.Common.html#navBar"><span class="hs-identifier hs-var hs-var">navBar</span></a></span></span><span> </span><span id="local-6989586621679158853"><span class="annot"><span class="annottext">bs :: [Text]
+</span><a href="#local-6989586621679158853"><span class="hs-identifier hs-var">bs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.div</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;topbar&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span>
+</span><span id="line-66"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.nav</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;topnav&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-67"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.ul</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;navigation&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-68"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.a</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;home&quot;</span></span><span>
+</span><span id="line-69"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.a</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/recent&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;recent&quot;</span></span><span>
+</span><span id="line-70"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.a</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/mod&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;mod&quot;</span></span><span>
+</span><span id="line-71"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.ul</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board-navigation&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-72"></span><span>            </span><span class="annot"><span class="annottext">((Text -&gt; Html) -&gt; [Text] -&gt; Html)
+-&gt; [Text] -&gt; (Text -&gt; Html) -&gt; Html
+forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
+</span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; Html) -&gt; [Text] -&gt; Html
+forall (t :: * -&gt; *) m a.
+(Foldable t, Monoid m) =&gt;
+(a -&gt; m) -&gt; t a -&gt; m
+</span><span class="hs-identifier hs-var">foldMap</span></span><span> </span><span class="annot"><span class="annottext">[Text]
+</span><a href="#local-6989586621679158853"><span class="hs-identifier hs-var">bs</span></a></span><span> </span><span class="annot"><span class="annottext">((Text -&gt; Html) -&gt; Html) -&gt; (Text -&gt; Html) -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679158847"><span class="annot"><span class="annottext">b :: Text
+</span><a href="#local-6989586621679158847"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.a</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
+forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; AttributeValue
+forall a. ToValue a =&gt; a -&gt; AttributeValue
+</span><span class="hs-identifier hs-var">H.toValue</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679158847"><span class="hs-identifier hs-var">b</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Html
+</span><span class="hs-identifier hs-var">H.text</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679158847"><span class="hs-identifier hs-var">b</span></a></span><span>
+</span><span id="line-73"></span><span>
+</span><span id="line-74"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.ul</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;shortcuts&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-75"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.details</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;infobox&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-76"></span><span>                </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.summary</span></span><span> </span><span class="annot"><span class="hs-string">&quot;info&quot;</span></span><span>
+</span><span id="line-77"></span><span>                </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.div</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;infobox-content&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-78"></span><span>                    </span><span class="annot"><span class="hs-string">&quot;mageboard 2020&quot;</span></span><span>
+</span><span id="line-79"></span><span>                    </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.hr</span></span><span>
+</span><span id="line-80"></span><span>                    </span><span class="annot"><span class="hs-string">&quot;Allowed file formats: JPG | PNG | GIF | WEBM | MP4 | MP3 | OGG | PDF | EPUB | SWF&quot;</span></span><span>
+</span><span id="line-81"></span><span>                    </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.hr</span></span><span>
+</span><span id="line-82"></span><span>                    </span><span class="annot"><span class="hs-string">&quot;Formattting options include:&quot;</span></span><span>
+</span><span id="line-83"></span><span>                    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.ul</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-84"></span><span>                        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="hs-string">&quot;'''bold text'''&quot;</span></span><span>
+</span><span id="line-85"></span><span>                        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="hs-string">&quot;''italic text''&quot;</span></span><span>
+</span><span id="line-86"></span><span>                        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="hs-string">&quot;**spoiler**&quot;</span></span><span>
+</span><span id="line-87"></span><span>                        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="hs-string">&quot;==red text==&quot;</span></span><span>
+</span><span id="line-88"></span><span>                        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="hs-string">&quot;&gt;greentext&quot;</span></span><span>
+</span><span id="line-89"></span><span>                        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="hs-string">&quot;&lt;pinktext&quot;</span></span><span>
+</span><span id="line-90"></span><span>                        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.li</span></span><span> </span><span class="annot"><span class="hs-string">&quot;```code``` (multiline allowed)&quot;</span></span><span>
+</span><span id="line-91"></span><span>
+</span><span id="line-92"></span><span class="hs-comment">-- | Add navigation links that bring to top and bottom of the page.</span><span>
+</span><span id="line-93"></span><span class="annot"><a href="Imageboard.Pages.Common.html#addTopBottom"><span class="hs-identifier hs-type">addTopBottom</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
+</span><span id="line-94"></span><span id="addTopBottom"><span class="annot"><span class="annottext">addTopBottom :: Html -&gt; Html
+</span><a href="Imageboard.Pages.Common.html#addTopBottom"><span class="hs-identifier hs-var hs-var">addTopBottom</span></a></span></span><span> </span><span id="local-6989586621679158842"><span class="annot"><span class="annottext">c :: Html
+</span><a href="#local-6989586621679158842"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-95"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.nav</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.a</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="hs-string">&quot;#bottom-of-page&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;[Go to bottom]&quot;</span></span><span>
+</span><span id="line-96"></span><span>    </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.hr</span></span><span>
+</span><span id="line-97"></span><span>    </span><span class="annot"><span class="annottext">Html
+</span><a href="#local-6989586621679158842"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-98"></span><span>    </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.hr</span></span><span>
+</span><span id="line-99"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.nav</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.a</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="hs-string">&quot;#top-of-page&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;[Go to top]&quot;</span></span><span>
+</span><span id="line-100"></span><span>
+</span><span id="line-101"></span><span class="hs-comment">-- | A form for creating threads on given board.</span><span>
+</span><span id="line-102"></span><span class="annot"><a href="Imageboard.Pages.Common.html#threadForm"><span class="hs-identifier hs-type">threadForm</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
+</span><span id="line-103"></span><span id="threadForm"><span class="annot"><span class="annottext">threadForm :: Text -&gt; Html
+</span><a href="Imageboard.Pages.Common.html#threadForm"><span class="hs-identifier hs-var hs-var">threadForm</span></a></span></span><span> </span><span id="local-6989586621679158841"><span class="annot"><span class="annottext">b :: Text
+</span><a href="#local-6989586621679158841"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.div</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;form-container&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;postform&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.fieldset</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.form</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span>
+</span><span id="line-104"></span><span>    </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.action</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue
+</span><a href="#local-6989586621679158837"><span class="hs-identifier hs-var">postUrl</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.method</span></span><span> </span><span class="annot"><span class="hs-string">&quot;post&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.enctype</span></span><span> </span><span class="annot"><span class="hs-string">&quot;multipart/form-data&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-105"></span><span>        </span><span class="annot"><span class="annottext">Html
+</span><a href="Imageboard.Pages.Common.html#postFormTable"><span class="hs-identifier hs-var">postFormTable</span></a></span><span>
+</span><span id="line-106"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-107"></span><span>        </span><span id="local-6989586621679158837"><span class="annot"><span class="annottext">postUrl :: AttributeValue
+</span><a href="#local-6989586621679158837"><span class="hs-identifier hs-var hs-var">postUrl</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;/post/&quot;</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
+forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; AttributeValue
+forall a. ToValue a =&gt; a -&gt; AttributeValue
+</span><span class="hs-identifier hs-var">H.toValue</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679158841"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span>
+</span><span id="line-108"></span><span>    </span><span>
+</span><span id="line-109"></span><span class="hs-comment">-- | A form for creating replies to thread specified by board and number.</span><span>
+</span><span id="line-110"></span><span class="annot"><a href="Imageboard.Pages.Common.html#replyForm"><span class="hs-identifier hs-type">replyForm</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
+</span><span id="line-111"></span><span id="replyForm"><span class="annot"><span class="annottext">replyForm :: Text -&gt; Int -&gt; Html
+</span><a href="Imageboard.Pages.Common.html#replyForm"><span class="hs-identifier hs-var hs-var">replyForm</span></a></span></span><span> </span><span id="local-6989586621679158833"><span class="annot"><span class="annottext">b :: Text
+</span><a href="#local-6989586621679158833"><span class="hs-identifier hs-var">b</span></a></span></span><span> </span><span id="local-6989586621679158832"><span class="annot"><span class="annottext">n :: Int
+</span><a href="#local-6989586621679158832"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.div</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;form-container&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;postform&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.fieldset</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.form</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span>
+</span><span id="line-112"></span><span>    </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.action</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue
+</span><a href="#local-6989586621679158831"><span class="hs-identifier hs-var">postUrl</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.method</span></span><span> </span><span class="annot"><span class="hs-string">&quot;post&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.enctype</span></span><span> </span><span class="annot"><span class="hs-string">&quot;multipart/form-data&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-113"></span><span>        </span><span class="annot"><span class="annottext">Html
+</span><a href="Imageboard.Pages.Common.html#postFormTable"><span class="hs-identifier hs-var">postFormTable</span></a></span><span>
+</span><span id="line-114"></span><span>    </span><span class="hs-keyword">where</span><span> </span><span>
+</span><span id="line-115"></span><span>        </span><span id="local-6989586621679158831"><span class="annot"><span class="annottext">postUrl :: AttributeValue
+</span><a href="#local-6989586621679158831"><span class="hs-identifier hs-var hs-var">postUrl</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-string">&quot;/post/&quot;</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
+forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; AttributeValue
+forall a. ToValue a =&gt; a -&gt; AttributeValue
+</span><span class="hs-identifier hs-var">H.toValue</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679158833"><span class="hs-identifier hs-var">b</span></a></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
+forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; AttributeValue -&gt; AttributeValue
+forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">Int -&gt; AttributeValue
+forall a. ToValue a =&gt; a -&gt; AttributeValue
+</span><span class="hs-identifier hs-var">H.toValue</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679158832"><span class="hs-identifier hs-var">n</span></a></span><span>
+</span><span id="line-116"></span><span>
+</span><span id="line-117"></span><span class="annot"><a href="Imageboard.Pages.Common.html#postFormTable"><span class="hs-identifier hs-type">postFormTable</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">H.Html</span></span><span>
+</span><span id="line-118"></span><span id="postFormTable"><span class="annot"><span class="annottext">postFormTable :: Html
+</span><a href="Imageboard.Pages.Common.html#postFormTable"><span class="hs-identifier hs-var hs-var">postFormTable</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.table</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.tbody</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-119"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.tr</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-120"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.th</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.label</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.for</span></span><span> </span><span class="annot"><span class="hs-string">&quot;name&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Name&quot;</span></span><span>
+</span><span id="line-121"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.td</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.input</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;name&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.name</span></span><span> </span><span class="annot"><span class="hs-string">&quot;name&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.type_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;text&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.maxlength</span></span><span> </span><span class="annot"><span class="hs-string">&quot;64&quot;</span></span><span> </span><span>
+</span><span id="line-122"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.td</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.a</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;close-button&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.href</span></span><span> </span><span class="annot"><span class="hs-string">&quot;#!&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;[X]&quot;</span></span><span>
+</span><span id="line-123"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.tr</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-124"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.th</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.label</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.for</span></span><span> </span><span class="annot"><span class="hs-string">&quot;email&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Email&quot;</span></span><span>
+</span><span id="line-125"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.td</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.input</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;email&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.name</span></span><span> </span><span class="annot"><span class="hs-string">&quot;email&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.type_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;text&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.maxlength</span></span><span> </span><span class="annot"><span class="hs-string">&quot;320&quot;</span></span><span>
+</span><span id="line-126"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.tr</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-127"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.th</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.label</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.for</span></span><span> </span><span class="annot"><span class="hs-string">&quot;subject&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Subject&quot;</span></span><span>
+</span><span id="line-128"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.td</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.input</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;subject&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.name</span></span><span> </span><span class="annot"><span class="hs-string">&quot;subject&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.type_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;text&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.maxlength</span></span><span> </span><span class="annot"><span class="hs-string">&quot;128&quot;</span></span><span> </span><span>
+</span><span id="line-129"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.td</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.input</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.type_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;submit&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.value</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Post&quot;</span></span><span> </span><span>
+</span><span id="line-130"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.tr</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-131"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.th</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.label</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.for</span></span><span> </span><span class="annot"><span class="hs-string">&quot;comment&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Comment&quot;</span></span><span>
+</span><span id="line-132"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.td</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.colspan</span></span><span> </span><span class="annot"><span class="hs-string">&quot;2&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.textarea</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;comment&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.name</span></span><span> </span><span class="annot"><span class="hs-string">&quot;comment&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.rows</span></span><span> </span><span class="annot"><span class="hs-string">&quot;5&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.maxlength</span></span><span> </span><span class="annot"><span class="hs-string">&quot;32768&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span>
+</span><span id="line-133"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.tr</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-134"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.th</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.label</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.for</span></span><span> </span><span class="annot"><span class="hs-string">&quot;file&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;File&quot;</span></span><span>
+</span><span id="line-135"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.td</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.colspan</span></span><span> </span><span class="annot"><span class="hs-string">&quot;2&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.input</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;file&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.type_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;file&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.name</span></span><span> </span><span class="annot"><span class="hs-string">&quot;file&quot;</span></span><span>
+</span><span id="line-136"></span><span>    </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.tr</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-137"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.th</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.label</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Attribute -&gt; Html -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.for</span></span><span> </span><span class="annot"><span class="hs-string">&quot;captcha&quot;</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Captcha&quot;</span></span><span>
+</span><span id="line-138"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.td</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.input</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.id</span></span><span> </span><span class="annot"><span class="hs-string">&quot;captcha&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.name</span></span><span> </span><span class="annot"><span class="hs-string">&quot;captcha&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.type_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;text&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.maxlength</span></span><span> </span><span class="annot"><span class="hs-string">&quot;10&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.autocomplete</span></span><span> </span><span class="annot"><span class="hs-string">&quot;off&quot;</span></span><span>
+</span><span id="line-139"></span><span>        </span><span class="annot"><span class="annottext">Html -&gt; Html
+</span><span class="hs-identifier hs-var">H.td</span></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; Html) -&gt; Html -&gt; Html
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html
+</span><span class="hs-identifier hs-var">H.img</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.alt</span></span><span> </span><span class="annot"><span class="hs-string">&quot;captcha image&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.class_</span></span><span> </span><span class="annot"><span class="hs-string">&quot;captcha&quot;</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Attribute -&gt; Html
+forall h. Attributable h =&gt; h -&gt; Attribute -&gt; h
+</span><span class="hs-glyph hs-var">!</span></span><span> </span><span class="annot"><span class="annottext">AttributeValue -&gt; Attribute
+</span><span class="hs-identifier hs-var">A.src</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/captcha.png&quot;</span></span></pre></body></html>

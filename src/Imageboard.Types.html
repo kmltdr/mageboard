@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Imageboard.Types</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-2"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#Post"><span class="hs-identifier">Post</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-3"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#PostStub"><span class="hs-identifier">PostStub</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#File"><span class="hs-identifier">File</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#FileType"><span class="hs-identifier">FileType</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#isImage"><span class="hs-identifier">isImage</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#isAudio"><span class="hs-identifier">isAudio</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#Dimensions"><span class="hs-identifier">Dimensions</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#ThreadFlags"><span class="hs-identifier">ThreadFlags</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#ThreadInfo"><span class="hs-identifier">ThreadInfo</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#ThreadHead"><span class="hs-identifier">ThreadHead</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#Thread"><span class="hs-identifier">Thread</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#PostLocation"><span class="hs-identifier">PostLocation</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-13"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier">Board</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier">BoardInfo</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#BoardConstraints"><span class="hs-identifier">BoardConstraints</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-14"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#Username"><span class="hs-identifier">Username</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier">AccountInfo</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Role"><span class="hs-identifier">Role</span></a></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-15"></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#SessionKey"><span class="hs-identifier">SessionKey</span></a></span><span>
+</span><span id="line-16"></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Time</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">UTCTime</span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-comment">-- | Data type representing supported file formats.</span><span>
+</span><span id="line-21"></span><span class="hs-keyword">data</span><span> </span><span id="FileType"><span class="annot"><a href="Imageboard.Types.html#FileType"><span class="hs-identifier hs-var">FileType</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="JPG"><span class="annot"><a href="Imageboard.Types.html#JPG"><span class="hs-identifier hs-var">JPG</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="PNG"><span class="annot"><a href="Imageboard.Types.html#PNG"><span class="hs-identifier hs-var">PNG</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="GIF"><span class="annot"><a href="Imageboard.Types.html#GIF"><span class="hs-identifier hs-var">GIF</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="WEBM"><span class="annot"><a href="Imageboard.Types.html#WEBM"><span class="hs-identifier hs-var">WEBM</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="MP4"><span class="annot"><a href="Imageboard.Types.html#MP4"><span class="hs-identifier hs-var">MP4</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="MP3"><span class="annot"><a href="Imageboard.Types.html#MP3"><span class="hs-identifier hs-var">MP3</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="OGG"><span class="annot"><a href="Imageboard.Types.html#OGG"><span class="hs-identifier hs-var">OGG</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="PDF"><span class="annot"><a href="Imageboard.Types.html#PDF"><span class="hs-identifier hs-var">PDF</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="EPUB"><span class="annot"><a href="Imageboard.Types.html#EPUB"><span class="hs-identifier hs-var">EPUB</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="SWF"><span class="annot"><a href="Imageboard.Types.html#SWF"><span class="hs-identifier hs-var">SWF</span></a></span></span><span> </span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158768"><span id="local-6989586621679158770"><span id="local-6989586621679158772"><span class="annot"><span class="annottext">Int -&gt; FileType -&gt; ShowS
+[FileType] -&gt; ShowS
+FileType -&gt; String
+(Int -&gt; FileType -&gt; ShowS)
+-&gt; (FileType -&gt; String) -&gt; ([FileType] -&gt; ShowS) -&gt; Show FileType
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [FileType] -&gt; ShowS
+$cshowList :: [FileType] -&gt; ShowS
+show :: FileType -&gt; String
+$cshow :: FileType -&gt; String
+showsPrec :: Int -&gt; FileType -&gt; ShowS
+$cshowsPrec :: Int -&gt; FileType -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679158763"><span id="local-6989586621679158765"><span class="annot"><span class="annottext">FileType
+FileType -&gt; FileType -&gt; Bounded FileType
+forall a. a -&gt; a -&gt; Bounded a
+maxBound :: FileType
+$cmaxBound :: FileType
+minBound :: FileType
+$cminBound :: FileType
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Bounded</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679158758"><span id="local-6989586621679158760"><span class="annot"><span class="annottext">FileType -&gt; FileType -&gt; Bool
+(FileType -&gt; FileType -&gt; Bool)
+-&gt; (FileType -&gt; FileType -&gt; Bool) -&gt; Eq FileType
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: FileType -&gt; FileType -&gt; Bool
+$c/= :: FileType -&gt; FileType -&gt; Bool
+== :: FileType -&gt; FileType -&gt; Bool
+$c== :: FileType -&gt; FileType -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="hs-comment">-- | Whether given file format may store an image.</span><span>
+</span><span id="line-25"></span><span class="annot"><a href="Imageboard.Types.html#isImage"><span class="hs-identifier hs-type">isImage</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#FileType"><span class="hs-identifier hs-type">FileType</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-26"></span><span id="isImage"><span class="annot"><span class="annottext">isImage :: FileType -&gt; Bool
+</span><a href="Imageboard.Types.html#isImage"><span class="hs-identifier hs-var hs-var">isImage</span></a></span></span><span> </span><span class="annot"><a href="Imageboard.Types.html#JPG"><span class="hs-identifier hs-type">JPG</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-27"></span><span class="annot"><a href="Imageboard.Types.html#isImage"><span class="hs-identifier hs-var">isImage</span></a></span><span> </span><span class="annot"><a href="Imageboard.Types.html#PNG"><span class="hs-identifier hs-type">PNG</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-28"></span><span class="annot"><a href="Imageboard.Types.html#isImage"><span class="hs-identifier hs-var">isImage</span></a></span><span> </span><span class="annot"><a href="Imageboard.Types.html#GIF"><span class="hs-identifier hs-type">GIF</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-29"></span><span class="annot"><a href="Imageboard.Types.html#isImage"><span class="hs-identifier hs-var">isImage</span></a></span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="hs-comment">-- | Whether given file format may store an audio. </span><span>
+</span><span id="line-32"></span><span class="annot"><a href="Imageboard.Types.html#isAudio"><span class="hs-identifier hs-type">isAudio</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#FileType"><span class="hs-identifier hs-type">FileType</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-33"></span><span id="isAudio"><span class="annot"><span class="annottext">isAudio :: FileType -&gt; Bool
+</span><a href="Imageboard.Types.html#isAudio"><span class="hs-identifier hs-var hs-var">isAudio</span></a></span></span><span> </span><span class="annot"><a href="Imageboard.Types.html#MP3"><span class="hs-identifier hs-type">MP3</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-34"></span><span class="annot"><a href="Imageboard.Types.html#isAudio"><span class="hs-identifier hs-var">isAudio</span></a></span><span> </span><span class="annot"><a href="Imageboard.Types.html#OGG"><span class="hs-identifier hs-type">OGG</span></a></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">True</span></span><span>
+</span><span id="line-35"></span><span class="annot"><a href="Imageboard.Types.html#isAudio"><span class="hs-identifier hs-var">isAudio</span></a></span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">False</span></span><span>
+</span><span id="line-36"></span><span>
+</span><span id="line-37"></span><span class="hs-comment">-- | Dimensions of raster image or video.</span><span>
+</span><span id="line-38"></span><span class="hs-keyword">data</span><span> </span><span id="Dimensions"><span class="annot"><a href="Imageboard.Types.html#Dimensions"><span class="hs-identifier hs-var">Dimensions</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Dim"><span class="annot"><a href="Imageboard.Types.html#Dim"><span class="hs-identifier hs-var">Dim</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span id="width"><span class="annot"><span class="annottext">Dimensions -&gt; Int
+</span><a href="Imageboard.Types.html#width"><span class="hs-identifier hs-var hs-var">width</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">,</span><span> </span><span id="height"><span class="annot"><span class="annottext">Dimensions -&gt; Int
+</span><a href="Imageboard.Types.html#height"><span class="hs-identifier hs-var hs-var">height</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158748"><span id="local-6989586621679158750"><span id="local-6989586621679158752"><span class="annot"><span class="annottext">Int -&gt; Dimensions -&gt; ShowS
+[Dimensions] -&gt; ShowS
+Dimensions -&gt; String
+(Int -&gt; Dimensions -&gt; ShowS)
+-&gt; (Dimensions -&gt; String)
+-&gt; ([Dimensions] -&gt; ShowS)
+-&gt; Show Dimensions
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Dimensions] -&gt; ShowS
+$cshowList :: [Dimensions] -&gt; ShowS
+show :: Dimensions -&gt; String
+$cshow :: Dimensions -&gt; String
+showsPrec :: Int -&gt; Dimensions -&gt; ShowS
+$cshowsPrec :: Int -&gt; Dimensions -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679158734"><span id="local-6989586621679158736"><span id="local-6989586621679158738"><span id="local-6989586621679158740"><span id="local-6989586621679158744"><span id="local-6989586621679158746"><span class="annot"><span class="hs-identifier hs-type">Enum</span></span><span> </span><span class="annot"><a href="Imageboard.Types.html#FileType"><span class="hs-identifier hs-type">FileType</span></a></span></span></span></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-41"></span><span>    </span><span id="local-6989586621679158732"><span class="annot"><span class="annottext">fromEnum :: FileType -&gt; Int
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">fromEnum</span></span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#JPG"><span class="hs-identifier hs-type">JPG</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">0</span></span><span>
+</span><span id="line-42"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#PNG"><span class="hs-identifier hs-type">PNG</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">1</span></span><span>
+</span><span id="line-43"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#GIF"><span class="hs-identifier hs-type">GIF</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">2</span></span><span>
+</span><span id="line-44"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#WEBM"><span class="hs-identifier hs-type">WEBM</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">3</span></span><span>
+</span><span id="line-45"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#MP4"><span class="hs-identifier hs-type">MP4</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">4</span></span><span>
+</span><span id="line-46"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#MP3"><span class="hs-identifier hs-type">MP3</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">5</span></span><span>
+</span><span id="line-47"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#OGG"><span class="hs-identifier hs-type">OGG</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">6</span></span><span>
+</span><span id="line-48"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#PDF"><span class="hs-identifier hs-type">PDF</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">7</span></span><span>
+</span><span id="line-49"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#EPUB"><span class="hs-identifier hs-type">EPUB</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">8</span></span><span>
+</span><span id="line-50"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#SWF"><span class="hs-identifier hs-type">SWF</span></a></span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">9</span></span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span>    </span><span id="local-6989586621679158730"><span class="annot"><span class="annottext">toEnum :: Int -&gt; FileType
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">toEnum</span></span></span><span>      </span><span class="hs-number">0</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#JPG"><span class="hs-identifier hs-var">JPG</span></a></span><span>
+</span><span id="line-53"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">1</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#PNG"><span class="hs-identifier hs-var">PNG</span></a></span><span>
+</span><span id="line-54"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">2</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#GIF"><span class="hs-identifier hs-var">GIF</span></a></span><span>
+</span><span id="line-55"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">3</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#WEBM"><span class="hs-identifier hs-var">WEBM</span></a></span><span>
+</span><span id="line-56"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">4</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#MP4"><span class="hs-identifier hs-var">MP4</span></a></span><span>
+</span><span id="line-57"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">5</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#MP3"><span class="hs-identifier hs-var">MP3</span></a></span><span>
+</span><span id="line-58"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">6</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#OGG"><span class="hs-identifier hs-var">OGG</span></a></span><span>
+</span><span id="line-59"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">7</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#PDF"><span class="hs-identifier hs-var">PDF</span></a></span><span>
+</span><span id="line-60"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">8</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#EPUB"><span class="hs-identifier hs-var">EPUB</span></a></span><span>
+</span><span id="line-61"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">9</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">FileType
+</span><a href="Imageboard.Types.html#SWF"><span class="hs-identifier hs-var">SWF</span></a></span><span>
+</span><span id="line-62"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-identifier">_</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; FileType
+forall a. String -&gt; a
+</span><span class="hs-identifier hs-var">errorWithoutStackTrace</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Enum.FileType: bad argument&quot;</span></span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span><span class="hs-comment">-- | Unique name of a message board.</span><span>
+</span><span id="line-65"></span><span class="hs-keyword">type</span><span> </span><span id="Board"><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-var">Board</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-66"></span><span class="hs-comment">-- | Random token used for authentication.</span><span>
+</span><span id="line-67"></span><span class="hs-keyword">type</span><span> </span><span id="SessionKey"><span class="annot"><a href="Imageboard.Types.html#SessionKey"><span class="hs-identifier hs-var">SessionKey</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-68"></span><span class="hs-keyword">type</span><span> </span><span id="Username"><span class="annot"><a href="Imageboard.Types.html#Username"><span class="hs-identifier hs-var">Username</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-69"></span><span>
+</span><span id="line-70"></span><span class="hs-keyword">data</span><span> </span><span id="Role"><span class="annot"><a href="Imageboard.Types.html#Role"><span class="hs-identifier hs-var">Role</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Admin"><span class="annot"><a href="Imageboard.Types.html#Admin"><span class="hs-identifier hs-var">Admin</span></a></span></span><span> </span><span class="hs-glyph">|</span><span> </span><span id="Moderator"><span class="annot"><a href="Imageboard.Types.html#Moderator"><span class="hs-identifier hs-var">Moderator</span></a></span></span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158720"><span id="local-6989586621679158722"><span id="local-6989586621679158724"><span class="annot"><span class="annottext">Int -&gt; Role -&gt; ShowS
+[Role] -&gt; ShowS
+Role -&gt; String
+(Int -&gt; Role -&gt; ShowS)
+-&gt; (Role -&gt; String) -&gt; ([Role] -&gt; ShowS) -&gt; Show Role
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Role] -&gt; ShowS
+$cshowList :: [Role] -&gt; ShowS
+show :: Role -&gt; String
+$cshow :: Role -&gt; String
+showsPrec :: Int -&gt; Role -&gt; ShowS
+$cshowsPrec :: Int -&gt; Role -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679158716"><span id="local-6989586621679158718"><span class="annot"><span class="annottext">Role -&gt; Role -&gt; Bool
+(Role -&gt; Role -&gt; Bool) -&gt; (Role -&gt; Role -&gt; Bool) -&gt; Eq Role
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Role -&gt; Role -&gt; Bool
+$c/= :: Role -&gt; Role -&gt; Bool
+== :: Role -&gt; Role -&gt; Bool
+$c== :: Role -&gt; Role -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-71"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679158702"><span id="local-6989586621679158704"><span id="local-6989586621679158706"><span id="local-6989586621679158708"><span id="local-6989586621679158712"><span id="local-6989586621679158714"><span class="annot"><span class="hs-identifier hs-type">Enum</span></span><span> </span><span class="annot"><a href="Imageboard.Types.html#Role"><span class="hs-identifier hs-type">Role</span></a></span></span></span></span></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-72"></span><span>    </span><span id="local-6989586621679158701"><span class="annot"><span class="annottext">fromEnum :: Role -&gt; Int
+</span><a href="#local-6989586621679158701"><span class="hs-identifier hs-var hs-var hs-var hs-var">fromEnum</span></a></span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#Admin"><span class="hs-identifier hs-type">Admin</span></a></span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">0</span></span><span>
+</span><span id="line-73"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">fromEnum</span></span><span>    </span><span class="annot"><a href="Imageboard.Types.html#Moderator"><span class="hs-identifier hs-type">Moderator</span></a></span><span>   </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-number">1</span></span><span>
+</span><span id="line-74"></span><span>
+</span><span id="line-75"></span><span>    </span><span id="local-6989586621679158700"><span class="annot"><span class="annottext">toEnum :: Int -&gt; Role
+</span><a href="#local-6989586621679158700"><span class="hs-identifier hs-var hs-var hs-var hs-var">toEnum</span></a></span></span><span>      </span><span class="hs-number">0</span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Role
+</span><a href="Imageboard.Types.html#Admin"><span class="hs-identifier hs-var">Admin</span></a></span><span>
+</span><span id="line-76"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-number">1</span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Role
+</span><a href="Imageboard.Types.html#Moderator"><span class="hs-identifier hs-var">Moderator</span></a></span><span>
+</span><span id="line-77"></span><span>    </span><span class="annot"><span class="hs-identifier hs-var">toEnum</span></span><span>      </span><span class="hs-identifier">_</span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Role
+forall a. String -&gt; a
+</span><span class="hs-identifier hs-var">errorWithoutStackTrace</span></span><span> </span><span class="annot"><span class="hs-string">&quot;Enum.Role: bad argument&quot;</span></span><span>
+</span><span id="line-78"></span><span>
+</span><span id="line-79"></span><span class="hs-keyword">data</span><span> </span><span id="AccountInfo"><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier hs-var">AccountInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="AccountInfo"><span class="annot"><a href="Imageboard.Types.html#AccountInfo"><span class="hs-identifier hs-var">AccountInfo</span></a></span></span><span> </span><span class="hs-special">{</span><span>
+</span><span id="line-80"></span><span>        </span><span id="user"><span class="annot"><span class="annottext">AccountInfo -&gt; Username
+</span><a href="Imageboard.Types.html#user"><span class="hs-identifier hs-var hs-var">user</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Username"><span class="hs-identifier hs-type">Username</span></a></span><span>
+</span><span id="line-81"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="accountCreated"><span class="annot"><span class="annottext">AccountInfo -&gt; UTCTime
+</span><a href="Imageboard.Types.html#accountCreated"><span class="hs-identifier hs-var hs-var">accountCreated</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span>
+</span><span id="line-82"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="role"><span class="annot"><span class="annottext">AccountInfo -&gt; Role
+</span><a href="Imageboard.Types.html#role"><span class="hs-keyword hs-var hs-var">role</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Role"><span class="hs-identifier hs-type">Role</span></a></span><span>
+</span><span id="line-83"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158690"><span id="local-6989586621679158692"><span id="local-6989586621679158694"><span class="annot"><span class="annottext">Int -&gt; AccountInfo -&gt; ShowS
+[AccountInfo] -&gt; ShowS
+AccountInfo -&gt; String
+(Int -&gt; AccountInfo -&gt; ShowS)
+-&gt; (AccountInfo -&gt; String)
+-&gt; ([AccountInfo] -&gt; ShowS)
+-&gt; Show AccountInfo
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [AccountInfo] -&gt; ShowS
+$cshowList :: [AccountInfo] -&gt; ShowS
+show :: AccountInfo -&gt; String
+$cshow :: AccountInfo -&gt; String
+showsPrec :: Int -&gt; AccountInfo -&gt; ShowS
+$cshowsPrec :: Int -&gt; AccountInfo -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-84"></span><span>
+</span><span id="line-85"></span><span class="hs-comment">-- | Information specific to board.</span><span>
+</span><span id="line-86"></span><span class="hs-keyword">data</span><span> </span><span id="BoardInfo"><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-var">BoardInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="BoardInfo"><span class="annot"><a href="Imageboard.Types.html#BoardInfo"><span class="hs-identifier hs-var">BoardInfo</span></a></span></span><span> </span><span class="hs-special">{</span><span>
+</span><span id="line-87"></span><span>        </span><span id="name"><span class="annot"><span class="annottext">BoardInfo -&gt; Username
+</span><a href="Imageboard.Types.html#name"><span class="hs-identifier hs-var hs-var">name</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span>
+</span><span id="line-88"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="title"><span class="annot"><span class="annottext">BoardInfo -&gt; Username
+</span><a href="Imageboard.Types.html#title"><span class="hs-identifier hs-var hs-var">title</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-89"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="subtitle"><span class="annot"><span class="annottext">BoardInfo -&gt; Username
+</span><a href="Imageboard.Types.html#subtitle"><span class="hs-identifier hs-var hs-var">subtitle</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-90"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158680"><span id="local-6989586621679158682"><span id="local-6989586621679158684"><span class="annot"><span class="annottext">Int -&gt; BoardInfo -&gt; ShowS
+[BoardInfo] -&gt; ShowS
+BoardInfo -&gt; String
+(Int -&gt; BoardInfo -&gt; ShowS)
+-&gt; (BoardInfo -&gt; String)
+-&gt; ([BoardInfo] -&gt; ShowS)
+-&gt; Show BoardInfo
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [BoardInfo] -&gt; ShowS
+$cshowList :: [BoardInfo] -&gt; ShowS
+show :: BoardInfo -&gt; String
+$cshow :: BoardInfo -&gt; String
+showsPrec :: Int -&gt; BoardInfo -&gt; ShowS
+$cshowsPrec :: Int -&gt; BoardInfo -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-91"></span><span>
+</span><span id="line-92"></span><span class="hs-keyword">data</span><span> </span><span id="BoardConstraints"><span class="annot"><a href="Imageboard.Types.html#BoardConstraints"><span class="hs-identifier hs-var">BoardConstraints</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Constraints"><span class="annot"><a href="Imageboard.Types.html#Constraints"><span class="hs-identifier hs-var">Constraints</span></a></span></span><span> </span><span class="hs-special">{</span><span>
+</span><span id="line-93"></span><span>        </span><span id="isLocked"><span class="annot"><span class="annottext">BoardConstraints -&gt; Bool
+</span><a href="Imageboard.Types.html#isLocked"><span class="hs-identifier hs-var hs-var">isLocked</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="hs-comment">-- ^ Whether board is closed for new threads.</span><span>
+</span><span id="line-94"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="minLen"><span class="annot"><span class="annottext">BoardConstraints -&gt; Int
+</span><a href="Imageboard.Types.html#minLen"><span class="hs-identifier hs-var hs-var">minLen</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-comment">-- ^ Minimum length for a post.</span><span>
+</span><span id="line-95"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="maxLen"><span class="annot"><span class="annottext">BoardConstraints -&gt; Int
+</span><a href="Imageboard.Types.html#maxLen"><span class="hs-identifier hs-var hs-var">maxLen</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-comment">-- ^ Maximum length for a post.</span><span>
+</span><span id="line-96"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="maxNewLines"><span class="annot"><span class="annottext">BoardConstraints -&gt; Int
+</span><a href="Imageboard.Types.html#maxNewLines"><span class="hs-identifier hs-var hs-var">maxNewLines</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-comment">-- ^ Maximum number of new lines in a post.</span><span>
+</span><span id="line-97"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="maxReplies"><span class="annot"><span class="annottext">BoardConstraints -&gt; Int
+</span><a href="Imageboard.Types.html#maxReplies"><span class="hs-identifier hs-var hs-var">maxReplies</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-comment">-- ^ Maximum number of replies in a thread.</span><span>
+</span><span id="line-98"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="maxThreads"><span class="annot"><span class="annottext">BoardConstraints -&gt; Int
+</span><a href="Imageboard.Types.html#maxThreads"><span class="hs-identifier hs-var hs-var">maxThreads</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-comment">-- ^ Maximum number of threads on the board.</span><span>
+</span><span id="line-99"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158667"><span id="local-6989586621679158669"><span id="local-6989586621679158671"><span class="annot"><span class="annottext">Int -&gt; BoardConstraints -&gt; ShowS
+[BoardConstraints] -&gt; ShowS
+BoardConstraints -&gt; String
+(Int -&gt; BoardConstraints -&gt; ShowS)
+-&gt; (BoardConstraints -&gt; String)
+-&gt; ([BoardConstraints] -&gt; ShowS)
+-&gt; Show BoardConstraints
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [BoardConstraints] -&gt; ShowS
+$cshowList :: [BoardConstraints] -&gt; ShowS
+show :: BoardConstraints -&gt; String
+$cshow :: BoardConstraints -&gt; String
+showsPrec :: Int -&gt; BoardConstraints -&gt; ShowS
+$cshowsPrec :: Int -&gt; BoardConstraints -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-100"></span><span>
+</span><span id="line-101"></span><span class="hs-keyword">data</span><span> </span><span id="PostLocation"><span class="annot"><a href="Imageboard.Types.html#PostLocation"><span class="hs-identifier hs-var">PostLocation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="PostLocation"><span class="annot"><a href="Imageboard.Types.html#PostLocation"><span class="hs-identifier hs-var">PostLocation</span></a></span></span><span> </span><span class="hs-special">{</span><span>
+</span><span id="line-102"></span><span>        </span><span id="board"><span class="annot"><span class="annottext">PostLocation -&gt; Username
+</span><a href="Imageboard.Types.html#board"><span class="hs-identifier hs-var hs-var">board</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Board"><span class="hs-identifier hs-type">Board</span></a></span><span> </span><span class="hs-comment">-- ^ Name of board post was posted on.</span><span>
+</span><span id="line-103"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="number"><span class="annot"><span class="annottext">PostLocation -&gt; Int
+</span><a href="Imageboard.Types.html#number"><span class="hs-identifier hs-var hs-var">number</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-comment">-- ^ Post number, unique on board.</span><span>
+</span><span id="line-104"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="parent"><span class="annot"><span class="annottext">PostLocation -&gt; Maybe Int
+</span><a href="Imageboard.Types.html#parent"><span class="hs-identifier hs-var hs-var">parent</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-comment">-- ^ Number of parent post.</span><span>
+</span><span id="line-105"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158657"><span id="local-6989586621679158659"><span id="local-6989586621679158661"><span class="annot"><span class="annottext">Int -&gt; PostLocation -&gt; ShowS
+[PostLocation] -&gt; ShowS
+PostLocation -&gt; String
+(Int -&gt; PostLocation -&gt; ShowS)
+-&gt; (PostLocation -&gt; String)
+-&gt; ([PostLocation] -&gt; ShowS)
+-&gt; Show PostLocation
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [PostLocation] -&gt; ShowS
+$cshowList :: [PostLocation] -&gt; ShowS
+show :: PostLocation -&gt; String
+$cshow :: PostLocation -&gt; String
+showsPrec :: Int -&gt; PostLocation -&gt; ShowS
+$cshowsPrec :: Int -&gt; PostLocation -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-106"></span><span>
+</span><span id="line-107"></span><span class="hs-keyword">data</span><span> </span><span id="Post"><span class="annot"><a href="Imageboard.Types.html#Post"><span class="hs-identifier hs-var">Post</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Post"><span class="annot"><a href="Imageboard.Types.html#Post"><span class="hs-identifier hs-var">Post</span></a></span></span><span> </span><span class="hs-special">{</span><span>  </span><span>
+</span><span id="line-108"></span><span>        </span><span id="loc"><span class="annot"><span class="annottext">Post -&gt; PostLocation
+</span><a href="Imageboard.Types.html#loc"><span class="hs-identifier hs-var hs-var">loc</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#PostLocation"><span class="hs-identifier hs-type">PostLocation</span></a></span><span>
+</span><span id="line-109"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="date"><span class="annot"><span class="annottext">Post -&gt; UTCTime
+</span><a href="Imageboard.Types.html#date"><span class="hs-identifier hs-var hs-var">date</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span> </span><span class="hs-comment">-- ^ UTC date of post creation.</span><span>
+</span><span id="line-110"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="content"><span class="annot"><span class="annottext">Post -&gt; PostStub
+</span><a href="Imageboard.Types.html#content"><span class="hs-identifier hs-var hs-var">content</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#PostStub"><span class="hs-identifier hs-type">PostStub</span></a></span><span> </span><span>
+</span><span id="line-111"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="file"><span class="annot"><span class="annottext">Post -&gt; Maybe File
+</span><a href="Imageboard.Types.html#file"><span class="hs-identifier hs-var hs-var">file</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Imageboard.Types.html#File"><span class="hs-identifier hs-type">File</span></a></span><span> </span><span class="hs-comment">-- ^ File if attached.</span><span>
+</span><span id="line-112"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158646"><span id="local-6989586621679158648"><span id="local-6989586621679158650"><span class="annot"><span class="annottext">Int -&gt; Post -&gt; ShowS
+[Post] -&gt; ShowS
+Post -&gt; String
+(Int -&gt; Post -&gt; ShowS)
+-&gt; (Post -&gt; String) -&gt; ([Post] -&gt; ShowS) -&gt; Show Post
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Post] -&gt; ShowS
+$cshowList :: [Post] -&gt; ShowS
+show :: Post -&gt; String
+$cshow :: Post -&gt; String
+showsPrec :: Int -&gt; Post -&gt; ShowS
+$cshowsPrec :: Int -&gt; Post -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-113"></span><span>
+</span><span id="line-114"></span><span class="hs-keyword">data</span><span> </span><span id="PostStub"><span class="annot"><a href="Imageboard.Types.html#PostStub"><span class="hs-identifier hs-var">PostStub</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Stub"><span class="annot"><a href="Imageboard.Types.html#Stub"><span class="hs-identifier hs-var">Stub</span></a></span></span><span> </span><span class="hs-special">{</span><span>  </span><span>
+</span><span id="line-115"></span><span>        </span><span id="author"><span class="annot"><span class="annottext">PostStub -&gt; Username
+</span><a href="Imageboard.Types.html#author"><span class="hs-identifier hs-var hs-var">author</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-116"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="email"><span class="annot"><span class="annottext">PostStub -&gt; Username
+</span><a href="Imageboard.Types.html#email"><span class="hs-identifier hs-var hs-var">email</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-117"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="subject"><span class="annot"><span class="annottext">PostStub -&gt; Username
+</span><a href="Imageboard.Types.html#subject"><span class="hs-identifier hs-var hs-var">subject</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span>
+</span><span id="line-118"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="text"><span class="annot"><span class="annottext">PostStub -&gt; Username
+</span><a href="Imageboard.Types.html#text"><span class="hs-identifier hs-var hs-var">text</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ Post body.</span><span>
+</span><span id="line-119"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158635"><span id="local-6989586621679158637"><span id="local-6989586621679158639"><span class="annot"><span class="annottext">Int -&gt; PostStub -&gt; ShowS
+[PostStub] -&gt; ShowS
+PostStub -&gt; String
+(Int -&gt; PostStub -&gt; ShowS)
+-&gt; (PostStub -&gt; String) -&gt; ([PostStub] -&gt; ShowS) -&gt; Show PostStub
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [PostStub] -&gt; ShowS
+$cshowList :: [PostStub] -&gt; ShowS
+show :: PostStub -&gt; String
+$cshow :: PostStub -&gt; String
+showsPrec :: Int -&gt; PostStub -&gt; ShowS
+$cshowsPrec :: Int -&gt; PostStub -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-120"></span><span>
+</span><span id="line-121"></span><span class="hs-keyword">data</span><span> </span><span id="File"><span class="annot"><a href="Imageboard.Types.html#File"><span class="hs-identifier hs-var">File</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="File"><span class="annot"><a href="Imageboard.Types.html#File"><span class="hs-identifier hs-var">File</span></a></span></span><span> </span><span class="hs-special">{</span><span>  </span><span>
+</span><span id="line-122"></span><span>        </span><span id="filename"><span class="annot"><span class="annottext">File -&gt; Username
+</span><a href="Imageboard.Types.html#filename"><span class="hs-identifier hs-var hs-var">filename</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="hs-comment">-- ^ Exact file name, including extension.</span><span>
+</span><span id="line-123"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="ext"><span class="annot"><span class="annottext">File -&gt; FileType
+</span><a href="Imageboard.Types.html#ext"><span class="hs-identifier hs-var hs-var">ext</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#FileType"><span class="hs-identifier hs-type">FileType</span></a></span><span> </span><span class="hs-comment">-- ^ File format.</span><span>
+</span><span id="line-124"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="size"><span class="annot"><span class="annottext">File -&gt; Int
+</span><a href="Imageboard.Types.html#size"><span class="hs-identifier hs-var hs-var">size</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-comment">-- ^ Size in bytes.</span><span>
+</span><span id="line-125"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="dim"><span class="annot"><span class="annottext">File -&gt; Maybe Dimensions
+</span><a href="Imageboard.Types.html#dim"><span class="hs-identifier hs-var hs-var">dim</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Imageboard.Types.html#Dimensions"><span class="hs-identifier hs-type">Dimensions</span></a></span><span> </span><span class="hs-comment">-- ^ Dimensions if they apply.</span><span>
+</span><span id="line-126"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158624"><span id="local-6989586621679158626"><span id="local-6989586621679158628"><span class="annot"><span class="annottext">Int -&gt; File -&gt; ShowS
+[File] -&gt; ShowS
+File -&gt; String
+(Int -&gt; File -&gt; ShowS)
+-&gt; (File -&gt; String) -&gt; ([File] -&gt; ShowS) -&gt; Show File
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [File] -&gt; ShowS
+$cshowList :: [File] -&gt; ShowS
+show :: File -&gt; String
+$cshow :: File -&gt; String
+showsPrec :: Int -&gt; File -&gt; ShowS
+$cshowsPrec :: Int -&gt; File -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-127"></span><span>
+</span><span id="line-128"></span><span class="hs-keyword">data</span><span> </span><span id="ThreadFlags"><span class="annot"><a href="Imageboard.Types.html#ThreadFlags"><span class="hs-identifier hs-var">ThreadFlags</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Flags"><span class="annot"><a href="Imageboard.Types.html#Flags"><span class="hs-identifier hs-var">Flags</span></a></span></span><span> </span><span class="hs-special">{</span><span>
+</span><span id="line-129"></span><span>        </span><span id="sticky"><span class="annot"><span class="annottext">ThreadFlags -&gt; Bool
+</span><a href="Imageboard.Types.html#sticky"><span class="hs-identifier hs-var hs-var">sticky</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="hs-comment">-- ^ Whether thread is sticked to the top of the board.</span><span>
+</span><span id="line-130"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="lock"><span class="annot"><span class="annottext">ThreadFlags -&gt; Bool
+</span><a href="Imageboard.Types.html#lock"><span class="hs-identifier hs-var hs-var">lock</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>  </span><span class="hs-comment">-- ^ Whether thread is closed for replies.</span><span>
+</span><span id="line-131"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="autosage"><span class="annot"><span class="annottext">ThreadFlags -&gt; Bool
+</span><a href="Imageboard.Types.html#autosage"><span class="hs-identifier hs-var hs-var">autosage</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="hs-comment">-- ^ Whether thread can be bumped to the top of the board.</span><span>
+</span><span id="line-132"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="cycle_"><span class="annot"><span class="annottext">ThreadFlags -&gt; Bool
+</span><a href="Imageboard.Types.html#cycle_"><span class="hs-identifier hs-var hs-var">cycle_</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span> </span><span class="hs-comment">-- ^ Whether old replies will be deleted will after limit of max replies is reached.</span><span>
+</span><span id="line-133"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158613"><span id="local-6989586621679158615"><span id="local-6989586621679158617"><span class="annot"><span class="annottext">Int -&gt; ThreadFlags -&gt; ShowS
+[ThreadFlags] -&gt; ShowS
+ThreadFlags -&gt; String
+(Int -&gt; ThreadFlags -&gt; ShowS)
+-&gt; (ThreadFlags -&gt; String)
+-&gt; ([ThreadFlags] -&gt; ShowS)
+-&gt; Show ThreadFlags
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [ThreadFlags] -&gt; ShowS
+$cshowList :: [ThreadFlags] -&gt; ShowS
+show :: ThreadFlags -&gt; String
+$cshow :: ThreadFlags -&gt; String
+showsPrec :: Int -&gt; ThreadFlags -&gt; ShowS
+$cshowsPrec :: Int -&gt; ThreadFlags -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-134"></span><span>
+</span><span id="line-135"></span><span class="hs-keyword">data</span><span> </span><span id="ThreadInfo"><span class="annot"><a href="Imageboard.Types.html#ThreadInfo"><span class="hs-identifier hs-var">ThreadInfo</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="ThreadInfo"><span class="annot"><a href="Imageboard.Types.html#ThreadInfo"><span class="hs-identifier hs-var">ThreadInfo</span></a></span></span><span> </span><span class="hs-special">{</span><span>  </span><span>
+</span><span id="line-136"></span><span>        </span><span id="lastBump"><span class="annot"><span class="annottext">ThreadInfo -&gt; UTCTime
+</span><a href="Imageboard.Types.html#lastBump"><span class="hs-identifier hs-var hs-var">lastBump</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">UTCTime</span></span><span>
+</span><span id="line-137"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="flags"><span class="annot"><span class="annottext">ThreadInfo -&gt; ThreadFlags
+</span><a href="Imageboard.Types.html#flags"><span class="hs-identifier hs-var hs-var">flags</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#ThreadFlags"><span class="hs-identifier hs-type">ThreadFlags</span></a></span><span>
+</span><span id="line-138"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="replyCount"><span class="annot"><span class="annottext">ThreadInfo -&gt; Int
+</span><a href="Imageboard.Types.html#replyCount"><span class="hs-identifier hs-var hs-var">replyCount</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span> </span><span class="hs-comment">-- ^ Number of replies in thread.</span><span>
+</span><span id="line-139"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158603"><span id="local-6989586621679158605"><span id="local-6989586621679158607"><span class="annot"><span class="annottext">Int -&gt; ThreadInfo -&gt; ShowS
+[ThreadInfo] -&gt; ShowS
+ThreadInfo -&gt; String
+(Int -&gt; ThreadInfo -&gt; ShowS)
+-&gt; (ThreadInfo -&gt; String)
+-&gt; ([ThreadInfo] -&gt; ShowS)
+-&gt; Show ThreadInfo
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [ThreadInfo] -&gt; ShowS
+$cshowList :: [ThreadInfo] -&gt; ShowS
+show :: ThreadInfo -&gt; String
+$cshow :: ThreadInfo -&gt; String
+showsPrec :: Int -&gt; ThreadInfo -&gt; ShowS
+$cshowsPrec :: Int -&gt; ThreadInfo -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-140"></span><span>
+</span><span id="line-141"></span><span class="hs-keyword">data</span><span> </span><span id="ThreadHead"><span class="annot"><a href="Imageboard.Types.html#ThreadHead"><span class="hs-identifier hs-var">ThreadHead</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="ThreadHead"><span class="annot"><a href="Imageboard.Types.html#ThreadHead"><span class="hs-identifier hs-var">ThreadHead</span></a></span></span><span> </span><span class="hs-special">{</span><span> </span><span>
+</span><span id="line-142"></span><span>        </span><span id="opPost"><span class="annot"><span class="annottext">ThreadHead -&gt; Post
+</span><a href="Imageboard.Types.html#opPost"><span class="hs-identifier hs-var hs-var">opPost</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#Post"><span class="hs-identifier hs-type">Post</span></a></span><span> </span><span class="hs-comment">-- ^ Opening post of a thread.</span><span>
+</span><span id="line-143"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="opInfo"><span class="annot"><span class="annottext">ThreadHead -&gt; ThreadInfo
+</span><a href="Imageboard.Types.html#opInfo"><span class="hs-identifier hs-var hs-var">opInfo</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#ThreadInfo"><span class="hs-identifier hs-type">ThreadInfo</span></a></span><span> </span><span>
+</span><span id="line-144"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158594"><span id="local-6989586621679158596"><span id="local-6989586621679158598"><span class="annot"><span class="annottext">Int -&gt; ThreadHead -&gt; ShowS
+[ThreadHead] -&gt; ShowS
+ThreadHead -&gt; String
+(Int -&gt; ThreadHead -&gt; ShowS)
+-&gt; (ThreadHead -&gt; String)
+-&gt; ([ThreadHead] -&gt; ShowS)
+-&gt; Show ThreadHead
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [ThreadHead] -&gt; ShowS
+$cshowList :: [ThreadHead] -&gt; ShowS
+show :: ThreadHead -&gt; String
+$cshow :: ThreadHead -&gt; String
+showsPrec :: Int -&gt; ThreadHead -&gt; ShowS
+$cshowsPrec :: Int -&gt; ThreadHead -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-145"></span><span>
+</span><span id="line-146"></span><span class="hs-comment">-- | Thread as a whole.</span><span>
+</span><span id="line-147"></span><span class="hs-keyword">data</span><span> </span><span id="Thread"><span class="annot"><a href="Imageboard.Types.html#Thread"><span class="hs-identifier hs-var">Thread</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Thread"><span class="annot"><a href="Imageboard.Types.html#Thread"><span class="hs-identifier hs-var">Thread</span></a></span></span><span> </span><span class="hs-special">{</span><span>
+</span><span id="line-148"></span><span>        </span><span id="op"><span class="annot"><span class="annottext">Thread -&gt; ThreadHead
+</span><a href="Imageboard.Types.html#op"><span class="hs-identifier hs-var hs-var">op</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Imageboard.Types.html#ThreadHead"><span class="hs-identifier hs-type">ThreadHead</span></a></span><span>
+</span><span id="line-149"></span><span>    </span><span class="hs-special">,</span><span>   </span><span id="replies"><span class="annot"><span class="annottext">Thread -&gt; [Post]
+</span><a href="Imageboard.Types.html#replies"><span class="hs-identifier hs-var hs-var">replies</span></a></span></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="Imageboard.Types.html#Post"><span class="hs-identifier hs-type">Post</span></a></span><span class="hs-special">]</span><span>
+</span><span id="line-150"></span><span class="hs-special">}</span><span> </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679158585"><span id="local-6989586621679158587"><span id="local-6989586621679158589"><span class="annot"><span class="annottext">Int -&gt; Thread -&gt; ShowS
+[Thread] -&gt; ShowS
+Thread -&gt; String
+(Int -&gt; Thread -&gt; ShowS)
+-&gt; (Thread -&gt; String) -&gt; ([Thread] -&gt; ShowS) -&gt; Show Thread
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+showList :: [Thread] -&gt; ShowS
+$cshowList :: [Thread] -&gt; ShowS
+show :: Thread -&gt; String
+$cshow :: Thread -&gt; String
+showsPrec :: Int -&gt; Thread -&gt; ShowS
+$cshowsPrec :: Int -&gt; Thread -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span></pre></body></html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE OverloadedStrings #-}</span><span>
+</span><span id="line-2"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Main</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad</span></span><span>
+</span><span id="line-4"></span><span>
+</span><span id="line-5"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Network.Wai.Middleware.RequestLogger</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Wai</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">logStdoutDev</span></span><span class="hs-special">)</span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Network.Wai.Middleware.Static</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Wai</span></span><span> </span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Web.Scotty</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">S</span></span><span>
+</span><span id="line-8"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Network.HTTP.Types.Status</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">notFound404</span></span><span class="hs-special">)</span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Config.html"><span class="hs-identifier">Imageboard.Config</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Config.html#setupDirs"><span class="hs-identifier">setupDirs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Database.html"><span class="hs-identifier">Imageboard.Database</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Imageboard.Database.html#setupDb"><span class="hs-identifier">setupDb</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Pages.html"><span class="hs-identifier">Imageboard.Pages</span></a></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Actions.html"><span class="hs-identifier">Imageboard.Actions</span></a></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Imageboard.Utils.html"><span class="hs-identifier">Imageboard.Utils</span></a></span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="hs-comment">-- | Run the server. Routing is defined here.</span><span>
+</span><span id="line-17"></span><span class="annot"><a href="Main.html#main"><span class="hs-identifier hs-type">main</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span id="main"><span class="annot"><span class="annottext">main :: IO ()
+</span><a href="Main.html#main"><span class="hs-identifier hs-var hs-var">main</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-19"></span><span>    </span><span class="annot"><span class="annottext">IO ()
+</span><a href="Imageboard.Config.html#setupDirs"><span class="hs-identifier hs-var">setupDirs</span></a></span><span>
+</span><span id="line-20"></span><span>    </span><span class="annot"><span class="annottext">IO ()
+</span><a href="Imageboard.Database.html#setupDb"><span class="hs-identifier hs-var">setupDb</span></a></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><span class="annottext">Port -&gt; ScottyM () -&gt; IO ()
+</span><span class="hs-identifier hs-var">S.scotty</span></span><span> </span><span class="annot"><span class="hs-number">3000</span></span><span> </span><span class="annot"><span class="annottext">(ScottyM () -&gt; IO ()) -&gt; ScottyM () -&gt; IO ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-22"></span><span>        </span><span class="annot"><span class="annottext">Middleware -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.middleware</span></span><span> </span><span class="annot"><span class="annottext">Middleware
+</span><span class="hs-identifier hs-var">Wai.logStdoutDev</span></span><span>
+</span><span id="line-23"></span><span>        </span><span class="annot"><span class="annottext">Middleware -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.middleware</span></span><span> </span><span class="annot"><span class="annottext">(Middleware -&gt; ScottyM ()) -&gt; Middleware -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Policy -&gt; Middleware
+</span><span class="hs-identifier hs-var">Wai.staticPolicy</span></span><span> </span><span class="annot"><span class="annottext">(Policy -&gt; Middleware) -&gt; Policy -&gt; Middleware
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Policy
+</span><span class="hs-identifier hs-var">Wai.noDots</span></span><span> </span><span class="annot"><span class="annottext">Policy -&gt; Policy -&gt; Policy
+forall a. Semigroup a =&gt; a -&gt; a -&gt; a
+</span><span class="hs-operator hs-var">&lt;&gt;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Policy
+</span><span class="hs-identifier hs-var">Wai.addBase</span></span><span> </span><span class="annot"><span class="hs-string">&quot;static&quot;</span></span><span>
+</span><span id="line-24"></span><span>        </span><span class="hs-comment">-- Captcha</span><span>
+</span><span id="line-25"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/captcha.png&quot;</span></span><span>      </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Display.html#displayCaptcha"><span class="hs-identifier hs-var">displayCaptcha</span></a></span><span>
+</span><span id="line-26"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/&quot;</span></span><span>                 </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Display.html#displayHomePage"><span class="hs-identifier hs-var">displayHomePage</span></a></span><span> </span><span>
+</span><span id="line-27"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/recent&quot;</span></span><span>           </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Display.html#displayRecent"><span class="hs-identifier hs-var">displayRecent</span></a></span><span>
+</span><span id="line-28"></span><span>        </span><span class="hs-comment">-- Account actions</span><span>
+</span><span id="line-29"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/mod&quot;</span></span><span>              </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#modPage"><span class="hs-identifier hs-var">modPage</span></a></span><span>
+</span><span id="line-30"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.post</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;/login&quot;</span></span><span>            </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#tryLogin"><span class="hs-identifier hs-var">tryLogin</span></a></span><span>
+</span><span id="line-31"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.post</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;/logout&quot;</span></span><span>           </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#logout"><span class="hs-identifier hs-var">logout</span></a></span><span>
+</span><span id="line-32"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/changepass&quot;</span></span><span>       </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var">allowLoggedIn</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">Html
+</span><a href="Imageboard.Pages.Account.html#changePasswordPage"><span class="hs-identifier hs-var">changePasswordPage</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-33"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.post</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;/changepass&quot;</span></span><span>       </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var">allowLoggedIn</span></a></span><span> </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#changePass"><span class="hs-identifier hs-var">changePass</span></a></span><span>
+</span><span id="line-34"></span><span>        </span><span class="hs-comment">-- Admin actions</span><span>
+</span><span id="line-35"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/create-account&quot;</span></span><span>   </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-var">allowAdmin</span></a></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ActionM ()) -&gt; ActionM () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">Html
+</span><a href="Imageboard.Pages.Account.html#createAccountPage"><span class="hs-identifier hs-var">createAccountPage</span></a></span><span>
+</span><span id="line-36"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.post</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;/create-account&quot;</span></span><span>   </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-var">allowAdmin</span></a></span><span> </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#createAccount"><span class="hs-identifier hs-var">createAccount</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/boardedit/:board&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-var">allowAdmin</span></a></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ActionM ()) -&gt; ActionM () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionM Board -&gt; (Board -&gt; ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#prepareBoardEdit"><span class="hs-identifier hs-var">prepareBoardEdit</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.post</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;/boardedit/:board&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-var">allowAdmin</span></a></span><span> </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#modifyBoard"><span class="hs-identifier hs-var">modifyBoard</span></a></span><span>
+</span><span id="line-39"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/newboard&quot;</span></span><span>         </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-var">allowAdmin</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">Html
+</span><a href="Imageboard.Pages.Account.html#createBoardPage"><span class="hs-identifier hs-var">createBoardPage</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-40"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.post</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;/newboard&quot;</span></span><span>         </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowAdmin"><span class="hs-identifier hs-var">allowAdmin</span></a></span><span> </span><span class="annot"><span class="annottext">ActionM ()
+</span><a href="Imageboard.Actions.Admin.html#createBoard"><span class="hs-identifier hs-var">createBoard</span></a></span><span>
+</span><span id="line-41"></span><span>        </span><span class="hs-comment">-- Moderation actions</span><span>
+</span><span id="line-42"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;/delete-file/:name&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span>
+</span><span id="line-43"></span><span>            </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;name&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionM Board -&gt; (Board -&gt; ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var">allowLoggedIn</span></a></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ActionM ())
+-&gt; (Board -&gt; ActionM ()) -&gt; Board -&gt; ActionM ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Moderation.html#deleteFile"><span class="hs-identifier hs-var">deleteFile</span></a></span><span>
+</span><span id="line-44"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/unlink/:board/:num&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span>
+</span><span id="line-45"></span><span>            </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var">allowLoggedIn</span></a></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ActionM ()) -&gt; ActionM () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a. Monad m =&gt; m (m a) -&gt; m a
+</span><span class="hs-identifier hs-var">join</span></span><span> </span><span class="annot"><span class="annottext">(ActionT Text IO (ActionM ()) -&gt; ActionM ())
+-&gt; ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Port -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Moderation.html#unlinkPostFile"><span class="hs-identifier hs-var">unlinkPostFile</span></a></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Port -&gt; ActionM ())
+-&gt; ActionM Board -&gt; ActionT Text IO (Port -&gt; ActionM ())
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (Port -&gt; ActionM ())
+-&gt; ActionT Text IO Port -&gt; ActionT Text IO (ActionM ())
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Port
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;num&quot;</span></span><span>
+</span><span id="line-46"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/delete/:board/:num&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-47"></span><span>            </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var">allowLoggedIn</span></a></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ActionM ()) -&gt; ActionM () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a. Monad m =&gt; m (m a) -&gt; m a
+</span><span class="hs-identifier hs-var">join</span></span><span> </span><span class="annot"><span class="annottext">(ActionT Text IO (ActionM ()) -&gt; ActionM ())
+-&gt; ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Port -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Moderation.html#deletePost"><span class="hs-identifier hs-var">deletePost</span></a></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Port -&gt; ActionM ())
+-&gt; ActionM Board -&gt; ActionT Text IO (Port -&gt; ActionM ())
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (Port -&gt; ActionM ())
+-&gt; ActionT Text IO Port -&gt; ActionT Text IO (ActionM ())
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Port
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;num&quot;</span></span><span>
+</span><span id="line-48"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/sticky/:board/:num&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-49"></span><span>            </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var">allowLoggedIn</span></a></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ActionM ()) -&gt; ActionM () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a. Monad m =&gt; m (m a) -&gt; m a
+</span><span class="hs-identifier hs-var">join</span></span><span> </span><span class="annot"><span class="annottext">(ActionT Text IO (ActionM ()) -&gt; ActionM ())
+-&gt; ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Port -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Moderation.html#toggleThreadSticky"><span class="hs-identifier hs-var">toggleThreadSticky</span></a></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Port -&gt; ActionM ())
+-&gt; ActionM Board -&gt; ActionT Text IO (Port -&gt; ActionM ())
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (Port -&gt; ActionM ())
+-&gt; ActionT Text IO Port -&gt; ActionT Text IO (ActionM ())
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Port
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;num&quot;</span></span><span>
+</span><span id="line-50"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/lock/:board/:num&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-51"></span><span>            </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var">allowLoggedIn</span></a></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ActionM ()) -&gt; ActionM () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a. Monad m =&gt; m (m a) -&gt; m a
+</span><span class="hs-identifier hs-var">join</span></span><span> </span><span class="annot"><span class="annottext">(ActionT Text IO (ActionM ()) -&gt; ActionM ())
+-&gt; ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Port -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Moderation.html#toggleThreadLock"><span class="hs-identifier hs-var">toggleThreadLock</span></a></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Port -&gt; ActionM ())
+-&gt; ActionM Board -&gt; ActionT Text IO (Port -&gt; ActionM ())
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (Port -&gt; ActionM ())
+-&gt; ActionT Text IO Port -&gt; ActionT Text IO (ActionM ())
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Port
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;num&quot;</span></span><span>
+</span><span id="line-52"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/autosage/:board/:num&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-53"></span><span>            </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var">allowLoggedIn</span></a></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ActionM ()) -&gt; ActionM () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a. Monad m =&gt; m (m a) -&gt; m a
+</span><span class="hs-identifier hs-var">join</span></span><span> </span><span class="annot"><span class="annottext">(ActionT Text IO (ActionM ()) -&gt; ActionM ())
+-&gt; ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Port -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Moderation.html#toggleThreadAutosage"><span class="hs-identifier hs-var">toggleThreadAutosage</span></a></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Port -&gt; ActionM ())
+-&gt; ActionM Board -&gt; ActionT Text IO (Port -&gt; ActionM ())
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (Port -&gt; ActionM ())
+-&gt; ActionT Text IO Port -&gt; ActionT Text IO (ActionM ())
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Port
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;num&quot;</span></span><span>
+</span><span id="line-54"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span> </span><span class="annot"><span class="hs-string">&quot;/cycle/:board/:num&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-55"></span><span>            </span><span class="annot"><span class="annottext">ActionM () -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Auth.html#allowLoggedIn"><span class="hs-identifier hs-var">allowLoggedIn</span></a></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ActionM ()) -&gt; ActionM () -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a. Monad m =&gt; m (m a) -&gt; m a
+</span><span class="hs-identifier hs-var">join</span></span><span> </span><span class="annot"><span class="annottext">(ActionT Text IO (ActionM ()) -&gt; ActionM ())
+-&gt; ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Port -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Moderation.html#toggleThreadCycle"><span class="hs-identifier hs-var">toggleThreadCycle</span></a></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Port -&gt; ActionM ())
+-&gt; ActionM Board -&gt; ActionT Text IO (Port -&gt; ActionM ())
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (Port -&gt; ActionM ())
+-&gt; ActionT Text IO Port -&gt; ActionT Text IO (ActionM ())
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Port
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;num&quot;</span></span><span>
+</span><span id="line-56"></span><span>        </span><span class="hs-comment">-- Browsing boards and threads</span><span>
+</span><span id="line-57"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/:board&quot;</span></span><span>       </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionM Board -&gt; (Board -&gt; ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Display.html#displayCatalog"><span class="hs-identifier hs-var">displayCatalog</span></a></span><span>
+</span><span id="line-58"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.get</span></span><span>   </span><span class="annot"><span class="hs-string">&quot;/:board/:num&quot;</span></span><span>  </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a. Monad m =&gt; m (m a) -&gt; m a
+</span><span class="hs-identifier hs-var">join</span></span><span> </span><span class="annot"><span class="annottext">(ActionT Text IO (ActionM ()) -&gt; ActionM ())
+-&gt; ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Port -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Display.html#displayThread"><span class="hs-identifier hs-var">displayThread</span></a></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Port -&gt; ActionM ())
+-&gt; ActionM Board -&gt; ActionT Text IO (Port -&gt; ActionM ())
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (Port -&gt; ActionM ())
+-&gt; ActionT Text IO Port -&gt; ActionT Text IO (ActionM ())
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Port
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;num&quot;</span></span><span>
+</span><span id="line-59"></span><span>        </span><span class="hs-comment">-- Posting</span><span>
+</span><span id="line-60"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.post</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;/post/:board&quot;</span></span><span>  </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionM Board -&gt; (Board -&gt; ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a b. Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
+</span><span class="hs-operator hs-var">&gt;&gt;=</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Posting.html#createThread"><span class="hs-identifier hs-var">createThread</span></a></span><span>
+</span><span id="line-61"></span><span>        </span><span class="annot"><span class="annottext">RoutePattern -&gt; ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.post</span></span><span>  </span><span class="annot"><span class="hs-string">&quot;/post/:board/:number&quot;</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span>
+</span><span id="line-62"></span><span>            </span><span class="annot"><span class="annottext">ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall (m :: * -&gt; *) a. Monad m =&gt; m (m a) -&gt; m a
+</span><span class="hs-identifier hs-var">join</span></span><span> </span><span class="annot"><span class="annottext">(ActionT Text IO (ActionM ()) -&gt; ActionM ())
+-&gt; ActionT Text IO (ActionM ()) -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Port -&gt; ActionM ()
+</span><a href="Imageboard.Actions.Posting.html#createPost"><span class="hs-identifier hs-var">createPost</span></a></span><span> </span><span class="annot"><span class="annottext">(Board -&gt; Port -&gt; ActionM ())
+-&gt; ActionM Board -&gt; ActionT Text IO (Port -&gt; ActionM ())
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM Board
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;board&quot;</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO (Port -&gt; ActionM ())
+-&gt; ActionT Text IO Port -&gt; ActionT Text IO (ActionM ())
+forall (f :: * -&gt; *) a b. Applicative f =&gt; f (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;*&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO Port
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="hs-string">&quot;number&quot;</span></span><span>
+</span><span id="line-63"></span><span>        </span><span class="annot"><span class="annottext">ActionM () -&gt; ScottyM ()
+</span><span class="hs-identifier hs-var">S.notFound</span></span><span> </span><span class="annot"><span class="annottext">(ActionM () -&gt; ScottyM ()) -&gt; ActionM () -&gt; ScottyM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-64"></span><span>            </span><span class="annot"><span class="annottext">Status -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">S.status</span></span><span> </span><span class="annot"><span class="annottext">Status
+</span><span class="hs-identifier hs-var">notFound404</span></span><span>
+</span><span id="line-65"></span><span>            </span><span class="annot"><span class="annottext">Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var">blaze</span></a></span><span> </span><span class="annot"><span class="annottext">(Html -&gt; ActionM ()) -&gt; Html -&gt; ActionM ()
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Board -&gt; Html
+</span><a href="Imageboard.Pages.html#errorView"><span class="hs-identifier hs-var">errorView</span></a></span><span> </span><span class="annot"><span class="hs-string">&quot;404&quot;</span></span><span>
+</span><span id="line-66"></span></pre></body></html>

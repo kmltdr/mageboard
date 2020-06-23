@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-partial-type-signatures #-}</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE OverloadedStrings, RecordWildCards, PartialTypeSignatures #-}</span><span>
+</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Imageboard.Utils</span><span> </span><span class="hs-special">(</span><span>
+</span><span id="line-4"></span><span>    </span><span class="annot"><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier">blaze</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-5"></span><span>    </span><span class="annot"><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier">maybeParam</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><a href="Imageboard.Utils.html#maybeFile"><span class="hs-identifier">maybeFile</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><a href="Imageboard.Utils.html#checkBoxParam"><span class="hs-identifier">checkBoxParam</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><a href="Imageboard.Utils.html#maybetoExcept"><span class="hs-identifier">maybetoExcept</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><a href="Imageboard.Utils.html#FileData"><span class="hs-identifier">FileData</span></a></span><span>
+</span><span id="line-10"></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-11"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.Except</span></span><span>
+</span><span id="line-12"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span>
+</span><span id="line-13"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Text</span></span><span class="hs-special">)</span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Lazy</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Lazy</span></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.ByteString.Lazy</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">B</span></span><span>
+</span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Network.Wai.Parse</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">N</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">FileInfo</span></span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Web.Scotty</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">S</span></span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Blaze.Html5</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Html</span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Text.Blaze.Html.Renderer.Text</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">renderHtml</span></span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span class="hs-comment">-- | Type representing file as received by HTTP server.</span><span>
+</span><span id="line-22"></span><span class="hs-keyword">type</span><span> </span><span id="FileData"><span class="annot"><a href="Imageboard.Utils.html#FileData"><span class="hs-identifier hs-var">FileData</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">N.FileInfo</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">B.ByteString</span></span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span class="hs-comment">-- | Send HTML created with blaze-html combinators. </span><span>
+</span><span id="line-25"></span><span class="annot"><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-type">blaze</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Html</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-26"></span><span id="blaze"><span class="annot"><span class="annottext">blaze :: Html -&gt; ActionM ()
+</span><a href="Imageboard.Utils.html#blaze"><span class="hs-identifier hs-var hs-var">blaze</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionM ()
+</span><span class="hs-identifier hs-var">S.html</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; ActionM ()) -&gt; (Html -&gt; Text) -&gt; Html -&gt; ActionM ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Html -&gt; Text
+</span><span class="hs-identifier hs-var">renderHtml</span></span><span>  </span><span>
+</span><span id="line-27"></span><span>  </span><span>
+</span><span id="line-28"></span><span class="hs-comment">-- | Maybe get a parameter as in 'Web.Scotty.param', return Nothing </span><span>
+</span><span id="line-29"></span><span class="hs-comment">-- if it is not found. </span><span>
+</span><span id="line-30"></span><span id="local-6989586621679159485"><span class="annot"><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-type">maybeParam</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.Parsable</span></span><span> </span><span class="annot"><a href="#local-6989586621679159485"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lazy.Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="#local-6989586621679159485"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span><span>
+</span><span id="line-31"></span><span id="maybeParam"><span class="annot"><span class="annottext">maybeParam :: Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var hs-var">maybeParam</span></a></span></span><span> </span><span id="local-6989586621679159456"><span class="annot"><span class="annottext">p :: Text
+</span><a href="#local-6989586621679159456"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; Maybe a
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="annot"><span class="annottext">(a -&gt; Maybe a) -&gt; ActionT Text IO a -&gt; ActionM (Maybe a)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO a
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679159456"><span class="hs-identifier hs-var">p</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ActionM (Maybe a)
+-&gt; (Text -&gt; ActionM (Maybe a)) -&gt; ActionM (Maybe a)
+forall a. ActionM a -&gt; (Text -&gt; ActionM a) -&gt; ActionM a
+</span><span class="hs-operator hs-var">`S.rescue`</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ActionM (Maybe a) -&gt; Text -&gt; ActionM (Maybe a)
+forall a b. a -&gt; b -&gt; a
+</span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="annot"><span class="annottext">(ActionM (Maybe a) -&gt; Text -&gt; ActionM (Maybe a))
+-&gt; ActionM (Maybe a) -&gt; Text -&gt; ActionM (Maybe a)
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">Maybe a -&gt; ActionM (Maybe a)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">Maybe a
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span class="hs-special">)</span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-comment">-- | Get a parameter as in 'Web.Scotty.param', returning Left</span><span>
+</span><span id="line-34"></span><span class="hs-comment">-- if it is not found.</span><span>
+</span><span id="line-35"></span><span id="local-6989586621679159451"><span class="annot"><a href="Imageboard.Utils.html#tryParam"><span class="hs-identifier hs-type">tryParam</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.Parsable</span></span><span> </span><span class="annot"><a href="#local-6989586621679159451"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lazy.Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span> </span><span class="annot"><a href="#local-6989586621679159451"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span></span><span>
+</span><span id="line-36"></span><span id="tryParam"><span class="annot"><span class="annottext">tryParam :: Text -&gt; ActionM (Either Text a)
+</span><a href="Imageboard.Utils.html#tryParam"><span class="hs-identifier hs-var hs-var">tryParam</span></a></span></span><span> </span><span id="local-6989586621679159449"><span class="annot"><span class="annottext">p :: Text
+</span><a href="#local-6989586621679159449"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; Either Text a
+forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="annot"><span class="annottext">(a -&gt; Either Text a)
+-&gt; ActionT Text IO a -&gt; ActionM (Either Text a)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO a
+forall a. Parsable a =&gt; Text -&gt; ActionM a
+</span><span class="hs-identifier hs-var">S.param</span></span><span> </span><span class="annot"><span class="annottext">Text
+</span><a href="#local-6989586621679159449"><span class="hs-identifier hs-var">p</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ActionM (Either Text a)
+-&gt; (Text -&gt; ActionM (Either Text a)) -&gt; ActionM (Either Text a)
+forall a. ActionM a -&gt; (Text -&gt; ActionM a) -&gt; ActionM a
+</span><span class="hs-operator hs-var">`S.rescue`</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Either Text a -&gt; ActionM (Either Text a)
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Either Text a -&gt; ActionM (Either Text a))
+-&gt; (Text -&gt; Either Text a) -&gt; Text -&gt; ActionM (Either Text a)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Either Text a
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; Either Text a) -&gt; (Text -&gt; Text) -&gt; Text -&gt; Either Text a
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text
+</span><span class="hs-identifier hs-var">Lazy.toStrict</span></span><span class="hs-special">)</span><span>
+</span><span id="line-37"></span><span>
+</span><span id="line-38"></span><span class="hs-comment">-- | Get checkbox state from HTML form.</span><span>
+</span><span id="line-39"></span><span class="annot"><a href="Imageboard.Utils.html#checkBoxParam"><span class="hs-identifier hs-type">checkBoxParam</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Lazy.Text</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-40"></span><span class="hs-comment">-- Only checked checkboxes will apear in form data set.</span><span>
+</span><span id="line-41"></span><span class="hs-comment">-- &lt;https://www.w3.org/TR/2012/WD-html5-20120329/form-submission.html#constructing-form-data-set&gt;</span><span>
+</span><span id="line-42"></span><span id="checkBoxParam"><span class="annot"><span class="annottext">checkBoxParam :: Text -&gt; ActionM Bool
+</span><a href="Imageboard.Utils.html#checkBoxParam"><span class="hs-identifier hs-var hs-var">checkBoxParam</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Maybe Text -&gt; Bool)
+-&gt; ActionT Text IO (Maybe Text) -&gt; ActionM Bool
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-identifier hs-var">fmap</span></span><span> </span><span class="annot"><span class="annottext">Maybe Text -&gt; Bool
+forall a. Maybe a -&gt; Bool
+</span><span class="hs-identifier hs-var">isJust</span></span><span> </span><span class="annot"><span class="annottext">(ActionT Text IO (Maybe Text) -&gt; ActionM Bool)
+-&gt; (Text -&gt; ActionT Text IO (Maybe Text)) -&gt; Text -&gt; ActionM Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Text -&gt; ActionT Text IO (Maybe Text)
+forall a. Parsable a =&gt; Text -&gt; ActionM (Maybe a)
+</span><a href="Imageboard.Utils.html#maybeParam"><span class="hs-identifier hs-var">maybeParam</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Text</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-43"></span><span>
+</span><span id="line-44"></span><span class="hs-comment">-- | Maybe get non-zero-length file.</span><span>
+</span><span id="line-45"></span><span class="annot"><a href="Imageboard.Utils.html#maybeFile"><span class="hs-identifier hs-type">maybeFile</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">S.ActionM</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="Imageboard.Utils.html#FileData"><span class="hs-identifier hs-type">FileData</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-46"></span><span id="maybeFile"><span class="annot"><span class="annottext">maybeFile :: ActionM (Maybe FileData)
+</span><a href="Imageboard.Utils.html#maybeFile"><span class="hs-identifier hs-var hs-var">maybeFile</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[FileData] -&gt; Maybe FileData
+forall a. [a] -&gt; Maybe a
+</span><span class="hs-identifier hs-var">listToMaybe</span></span><span> </span><span class="annot"><span class="annottext">([FileData] -&gt; Maybe FileData)
+-&gt; ([FileData] -&gt; [FileData]) -&gt; [FileData] -&gt; Maybe FileData
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">(FileData -&gt; Bool) -&gt; [FileData] -&gt; [FileData]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Bool -&gt; Bool
+</span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Bool) -&gt; (FileData -&gt; Bool) -&gt; FileData -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Bool
+</span><span class="hs-identifier hs-var">B.null</span></span><span> </span><span class="annot"><span class="annottext">(ByteString -&gt; Bool)
+-&gt; (FileData -&gt; ByteString) -&gt; FileData -&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FileData -&gt; ByteString
+forall c. FileInfo c -&gt; c
+</span><span class="hs-identifier hs-var hs-var">N.fileContent</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([FileData] -&gt; Maybe FileData)
+-&gt; ([(Text, FileData)] -&gt; [FileData])
+-&gt; [(Text, FileData)]
+-&gt; Maybe FileData
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">((Text, FileData) -&gt; FileData) -&gt; [(Text, FileData)] -&gt; [FileData]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="annot"><span class="annottext">(Text, FileData) -&gt; FileData
+forall a b. (a, b) -&gt; b
+</span><span class="hs-identifier hs-var">snd</span></span><span> </span><span class="annot"><span class="annottext">([(Text, FileData)] -&gt; Maybe FileData)
+-&gt; ActionT Text IO [(Text, FileData)] -&gt; ActionM (Maybe FileData)
+forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">ActionT Text IO [(Text, FileData)]
+</span><span class="hs-identifier hs-var">S.files</span></span><span> </span><span>
+</span><span id="line-47"></span><span>
+</span><span id="line-48"></span><span class="hs-comment">-- | Maybe return a value, otherwise throw given error.</span><span>
+</span><span id="line-49"></span><span id="local-6989586621679159439"><span id="local-6989586621679159440"><span id="local-6989586621679159441"><span class="annot"><a href="Imageboard.Utils.html#maybetoExcept"><span class="hs-identifier hs-type">maybetoExcept</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Monad</span></span><span> </span><span class="annot"><a href="#local-6989586621679159441"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679159440"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="annot"><a href="#local-6989586621679159439"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">ExceptT</span></span><span> </span><span class="annot"><a href="#local-6989586621679159440"><span class="hs-identifier hs-type">b</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679159441"><span class="hs-identifier hs-type">m</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679159439"><span class="hs-identifier hs-type">a</span></a></span></span></span></span><span>
+</span><span id="line-50"></span><span id="maybetoExcept"><span class="annot"><span class="annottext">maybetoExcept :: b -&gt; Maybe a -&gt; ExceptT b m a
+</span><a href="Imageboard.Utils.html#maybetoExcept"><span class="hs-identifier hs-var hs-var">maybetoExcept</span></a></span></span><span> </span><span id="local-6989586621679159438"><span class="annot"><span class="annottext">e :: b
+</span><a href="#local-6989586621679159438"><span class="hs-identifier hs-var">e</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">ExceptT b m a -&gt; (a -&gt; ExceptT b m a) -&gt; Maybe a -&gt; ExceptT b m a
+forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
+</span><span class="hs-identifier hs-var">maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">b -&gt; ExceptT b m a
+forall e (m :: * -&gt; *) a. MonadError e m =&gt; e -&gt; m a
+</span><span class="hs-identifier hs-var">throwError</span></span><span> </span><span class="annot"><span class="annottext">b
+</span><a href="#local-6989586621679159438"><span class="hs-identifier hs-var">e</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">a -&gt; ExceptT b m a
+forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
+</span><span class="hs-identifier hs-var">return</span></span><span> </span><span>
+</span><span id="line-51"></span></pre></body></html>
